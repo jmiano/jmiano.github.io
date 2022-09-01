@@ -269,7 +269,7 @@ section {
 }
 
 .section-bg {
-  background: #f5f8fd;
+  background: #f5f8fd; /*background: #f5f8fd*/
 }
 
 .section-title {
@@ -478,9 +478,65 @@ section {
   border: 2px solid #1f5297;
 }
 
+
+/*--------------------------------------------------------------
+# Papers
+--------------------------------------------------------------*/
+.papers {
+  background: #ffffff;
+}
+
+.papers .icon-box {
+  margin-bottom: 20px;
+}
+.papers .icon {
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  background: #149ddd;
+  border-radius: 50%;
+  transition: 0.5s;
+  border: 1px solid #149ddd;
+}
+.papers .icon i {
+  color: #fff;
+  font-size: 24px;
+  line-height: 0;
+}
+.papers .icon-box:hover .icon {
+  background: #fff;
+}
+.papers .icon-box:hover .icon i {
+  color: #149ddd;
+}
+.papers .title {
+  margin-left: 80px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+.papers .title a {
+  color: #343a40;
+}
+.papers .title a:hover {
+  color: #149ddd;
+}
+.papers .description {
+  margin-left: 80px;
+  line-height: 24px;
+  font-size: 14px;
+}
+
+
 /*--------------------------------------------------------------
 # Projects
 --------------------------------------------------------------*/
+.projects {
+  background: #f5f8fd;
+}
 .portfolio .portfolio-item {
   margin-bottom: 30px;
 }
@@ -519,7 +575,7 @@ section {
 }
 .portfolio .portfolio-wrap::before {
   content: "";
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(245, 248, 253, 0.5);
   position: absolute;
   left: 0;
   right: 0;
@@ -685,58 +741,11 @@ section {
 }
 
 /*--------------------------------------------------------------
-# Papers
---------------------------------------------------------------*/
-.papers .icon-box {
-  margin-bottom: 20px;
-}
-.papers .icon {
-  float: left;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 54px;
-  height: 54px;
-  background: #149ddd;
-  border-radius: 50%;
-  transition: 0.5s;
-  border: 1px solid #149ddd;
-}
-.papers .icon i {
-  color: #fff;
-  font-size: 24px;
-  line-height: 0;
-}
-.papers .icon-box:hover .icon {
-  background: #fff;
-}
-.papers .icon-box:hover .icon i {
-  color: #149ddd;
-}
-.papers .title {
-  margin-left: 80px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  font-size: 16px;
-}
-.papers .title a {
-  color: #343a40;
-}
-.papers .title a:hover {
-  color: #149ddd;
-}
-.papers .description {
-  margin-left: 80px;
-  line-height: 24px;
-  font-size: 14px;
-}
-
-
-/*--------------------------------------------------------------
 # Contact
 --------------------------------------------------------------*/
 .contact {
-  padding-bottom: 130px;
+  padding-bottom: 50px;
+  background: #f5f8fd;
 }
 .contact .info {
   padding: 30px;
@@ -750,7 +759,7 @@ section {
   float: left;
   width: 44px;
   height: 44px;
-  background: #dff3fc;
+  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -847,7 +856,7 @@ section {
   height: 24px;
   margin: 0 10px -6px 0;
   border: 3px solid #18d26e;
-  border-top-color: #eee;
+  border-top-color: #fff;
   -webkit-animation: animate-loading 1s linear infinite;
   animation: animate-loading 1s linear infinite;
 }
