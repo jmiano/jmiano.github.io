@@ -424,6 +424,285 @@ section {
   line-height: 24px;
   font-size: 14px;
 }
+.skills .python-li {
+  background: url('../img/bullets/python-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .sql-li {
+  background: url('../img/bullets/sql-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .matlab-li {
+  background: url('../img/bullets/matlab-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .java-li {
+  background: url('../img/bullets/java-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .c-li {
+  background: url('../img/bullets/c-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .pytorch-li {
+  background: url('../img/bullets/pytorch-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .transformers-li {
+  background: url('../img/bullets/transformers-logo.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .sklearn-li {
+  background: url('../img/bullets/sklearn-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .pyspark-li {
+  background: url('../img/bullets/pyspark-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .dask-li {
+  background: url('../img/bullets/dask-logo.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .matplotlib-li {
+  background: url('../img/bullets/matplotlib-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .seaborn-li {
+  background: url('../img/bullets/seaborn-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .plotly-li {
+  background: url('../img/bullets/plotly-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .streamlit-li {
+  background: url('../img/bullets/streamlit-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .tableau-li {
+  background: url('../img/bullets/tableau-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .nn-li {
+  background: url('../img/bullets/nn-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .feat-li {
+  background: url('../img/bullets/feat-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .ensemble-li {
+  background: url('../img/bullets/ensemble-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .unsupervised-li {
+  background: url('../img/bullets/cluster-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
+.skills .prompt-li {
+  background: url('../img/bullets/prompt-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .cv-li {
+  background: url('../img/bullets/cv-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .nlp-li {
+  background: url('../img/bullets/nlp-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .speech-li {
+  background: url('../img/bullets/speech-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .tabular-li {
+  background: url('../img/bullets/tabular-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .timeseries-li {
+  background: url('../img/bullets/timeseries-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .docker-li {
+  background: url('../img/bullets/docker-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .git-li {
+  background: url('../img/bullets/git-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .azure-li {
+  background: url('../img/bullets/azure-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .gcp-li {
+  background: url('../img/bullets/gcp-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .aws-li {
+  background: url('../img/bullets/aws-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+
 /*--------------------------------------------------------------
 # Resume
 --------------------------------------------------------------*/
