@@ -216,7 +216,7 @@
             <h3 class="resume-title">Summary</h3>
             <div class="resume-item pb-0">
               <h4>Joseph Miano</h4>
-              <p><em>Data scientist and machine learning engineer with 4+ years of experience in computer vision, natural language processing, tabular datasets, and deep learning.</em></p>
+              <p><em>Data scientist and machine learning engineer with 5+ years of experience in computer vision, natural language processing, tabular datasets, and deep learning.</em></p>
               <ul>
                 <li>Brussels, Belgium</li>
                 <li>j.miano@outlook.com</li>
@@ -277,13 +277,14 @@
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
             <h3 class="resume-title">Work Experience</h3>
             <div class="resume-item">
-              <h4>Senior Machine Learning Engineer</h4>
+              <h4>Senior Machine Learning Engineer &#8594 Team Lead</h4>
               <h5>Mar 2023 - Present</h5>
               <p><em>Radix, Brussels, Belgium </em></p>
               <ul>
+                <li>Lead a team of 7 machine learning engineers, which includes career growth mentorship, organizational planning, and project delivery support</li>
+                <li>Spearheaded a project to improve the efficiency of a medicine production pipeline via machine learning in collaboration with a pharmaceutical partner</li> 
                 <li>Developed deep learning models (convolutional autoencoders) to denoise barcode images for a project with a retail partner, leading to a 15%+ improvement in barcode recognition accuracy</li>
                 <li>Modeled (predictive) patient outcomes after surgical interventions for a project with a medical partner, facilitating patient expectation management at the various stages of their journey</li>
-                <li>Presented results, solutions, and proposed next steps to clients</li>
               </ul>
             </div>
             <div class="resume-item">
@@ -312,7 +313,7 @@
               <ul>
                 <li>Developed multi-task convolutional neural network for segmentation and classification of mouse brain x-ray microtomography data</li>
                 <li>Presented joint poster at the Allen Institute BioImage Informatics 2019 Conference (funded with PURA Travel Award)</li>
-                <li>Collaborated to publish 3 papers: Multi-scale modeling of neural structure in x-ray imagery, A three-dimensional thalamocortical dataset for characterizing brain heterogeneity, and Bayesian optimization for modular black-box systems with switching costs</li>
+                <li>Collaborated to publish 3 papers (linked in the <a href="#papers" class="smooth-scroll">Papers</a> section)</li>
               </ul>
             </div>
             <div class="resume-item">
@@ -521,6 +522,23 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <!-- Script to scroll to page section without modifying URL -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.smooth-scroll').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default anchor behavior
+                const targetId = this.getAttribute('href').slice(1); // Get the target id (removing the #)
+                const targetElement = document.getElementById(targetId); // Get the target element
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' }); // Scroll smoothly to the target element
+                }
+            });
+        });
+    });
+    </script>
 
 </body>
 
