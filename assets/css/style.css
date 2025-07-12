@@ -433,6 +433,15 @@ section {
   list-style-type: none;  /* Remove the default bullet point */
 }
 
+.skills .go-li {
+  background: url('../img/bullets/go-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
 .skills .sql-li {
   background: url('../img/bullets/sql-logo.png');
   background-repeat: no-repeat;
@@ -480,6 +489,15 @@ section {
 
 .skills .transformers-li {
   background: url('../img/bullets/transformers-logo.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .llamaindex-li {
+  background: url('../img/bullets/llamaindex-logo.png');
   background-repeat: no-repeat;
   background-position: left center;
   background-size: 20px;  /* Set the size of the image here */
@@ -553,9 +571,26 @@ section {
   list-style-type: none;  /* Remove the default bullet point */
 }
 
+.skills .gradio-li {
+  background: url('../img/bullets/gradio-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
 
 .skills .tableau-li {
   background: url('../img/bullets/tableau-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .agents-li {
+  background: url('../img/bullets/agents-logo.png');
   background-repeat: no-repeat;
   background-position: left center;
   background-size: 20px;  /* Set the size of the image here */
@@ -656,6 +691,25 @@ section {
   padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
   list-style-type: none;  /* Remove the default bullet point */
 }
+
+.skills .video-li {
+  background: url('../img/bullets/video-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
+.skills .kubernetes-li {
+  background: url('../img/bullets/kubernetes-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;  /* Set the size of the image here */
+  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
+  list-style-type: none;  /* Remove the default bullet point */
+}
+
 
 .skills .docker-li {
   background: url('../img/bullets/docker-logo.png');
@@ -1230,7 +1284,7 @@ section {
 #footer {
   padding: 15px;
   color: #f4f6fd;
-  font-size: 14px;
+  font-size: 14px; 
   position: fixed;
   left: 0;
   bottom: 0;
