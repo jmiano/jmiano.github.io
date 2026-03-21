@@ -45,8 +45,11 @@
    */
   let navbarlinks = select('#navbar .scrollto', true)
   let hoverActive = false
+  let clickActive = false
+  let clickTarget = null
+  let scrollTimeout = null
   const navbarlinksActive = () => {
-    if (hoverActive) return
+    if (hoverActive || clickActive) return
     let position = window.scrollY + 200
     navbarlinks.forEach(navbarlink => {
       if (!navbarlink.hash) return
@@ -60,13 +63,18 @@
     })
   }
   window.addEventListener('load', navbarlinksActive)
-  onscroll(document, navbarlinksActive)
+  onscroll(document, () => {
+    if (clickActive) return
+    navbarlinksActive()
+  })
 
   navbarlinks.forEach(navbarlink => {
     if (!navbarlink.hash) return
     let section = select(navbarlink.hash)
     if (!section) return
     section.addEventListener('mouseenter', () => {
+      clickActive = false
+      clickTarget = null
       hoverActive = true
       navbarlinks.forEach(nl => nl.classList.remove('active'))
       navbarlink.classList.add('active')
@@ -75,8 +83,15 @@
     section.addEventListener('mouseleave', () => {
       hoverActive = false
       section.classList.remove('section-hover')
-      navbarlinksActive()
     })
+  })
+
+  document.addEventListener('wheel', () => {
+    if (clickActive) {
+      clickActive = false
+      clickTarget = null
+      navbarlinksActive()
+    }
   })
 
   const clearAllHovers = () => {
@@ -89,23 +104,32 @@
   window.addEventListener('focus', () => {
     hoverActive = false
     clearAllHovers()
-    navbarlinksActive()
   })
   document.addEventListener('mouseleave', () => {
     hoverActive = false
     clearAllHovers()
-    navbarlinksActive()
   })
 
   /**
    * Scrolls to an element with header offset
    */
   const scrollto = (el) => {
-    let elementPos = select(el).offsetTop
-    window.scrollTo({
-      top: elementPos,
-      behavior: 'smooth'
-    })
+    let targetPos = select(el).offsetTop
+    let startPos = window.scrollY
+    let distance = targetPos - startPos
+    let duration = 300
+    let startTime = performance.now()
+
+    function step(currentTime) {
+      let elapsed = currentTime - startTime
+      let progress = Math.min(elapsed / duration, 1)
+      let ease = progress < 0.85 ? progress / 0.85 * 0.95 : 0.95 + (1 - Math.pow(1 - (progress - 0.85) / 0.15, 2)) * 0.05
+      window.scrollTo(0, startPos + distance * ease)
+      if (progress < 1) requestAnimationFrame(step)
+    }
+
+    window.scrollTo(0, startPos + distance * (1 / duration * 16 / 0.85 * 0.95))
+    requestAnimationFrame(step)
   }
 
   /**
@@ -140,6 +164,15 @@
     if (select(this.hash)) {
       e.preventDefault()
 
+      let hash = this.hash
+      scrollto(hash)
+
+      clickActive = true
+      clickTarget = hash
+      navbarlinks.forEach(nl => nl.classList.remove('active'))
+      let clickedLink = navbarlinks.find(nl => nl.hash === hash)
+      if (clickedLink) clickedLink.classList.add('active')
+
       let body = select('body')
       if (body.classList.contains('mobile-nav-active')) {
         body.classList.remove('mobile-nav-active')
@@ -147,7 +180,6 @@
         navbarToggle.classList.toggle('bi-list')
         navbarToggle.classList.toggle('bi-x')
       }
-      scrollto(this.hash)
     }
   }, true)
 
@@ -159,6 +191,8 @@
       if (select(window.location.hash)) {
         scrollto(window.location.hash)
       }
+    } else {
+      window.scrollTo(0, 0)
     }
   });
 
