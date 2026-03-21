@@ -537,12 +537,16 @@
                 <button type="button" class="neural-garden-btn neural-garden-btn-secondary neural-garden-hints-toggle">Hints</button>
                 <button type="button" class="neural-garden-btn neural-garden-btn-secondary" data-neural-action="clear">Reset</button>
                 <div class="neural-garden-hints">
-                  <ul>
-                    <li>Try adding 15 input neurons, 1 for each input pixel</li>
-                    <li>Make sure you have enough hidden neurons (5+ per hidden layer)</li>
-                    <li>Try training several times. The network keeps learning across runs</li>
-                    <li>More hidden neurons = more capacity to distinguish digits</li>
-                  </ul>
+                  <div class="neural-garden-hint-track" aria-live="polite">
+                    <div class="neural-garden-hint-slide active">Try adding all 15 input neurons so each pixel has a direct path into the network.</div>
+                    <div class="neural-garden-hint-slide">Use enough hidden neurons in both hidden layers so the network has room to separate patterns.</div>
+                    <div class="neural-garden-hint-slide">Training stacks across runs, so a few training passes may work better than resetting.</div>
+                    <div class="neural-garden-hint-slide">More hidden neurons usually means more capacity to distinguish tricky digits cleanly.</div>
+                  </div>
+                  <div class="neural-garden-hint-nav">
+                    <button type="button" class="neural-garden-hint-arrow neural-garden-hint-prev" aria-label="Previous hint">&larr;</button>
+                    <button type="button" class="neural-garden-hint-arrow neural-garden-hint-next" aria-label="Next hint">&rarr;</button>
+                  </div>
                 </div>
               </div>
             </div>

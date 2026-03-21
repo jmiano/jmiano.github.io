@@ -1290,6 +1290,17 @@
 
       const hintsToggle = select('.neural-garden-hints-toggle')
       const hintsPanel = select('.neural-garden-hints')
+      const hintSlides = select('.neural-garden-hint-slide', true)
+      const hintPrev = select('.neural-garden-hint-prev')
+      const hintNext = select('.neural-garden-hint-next')
+      let hintIndex = 0
+
+      const showHint = (nextIndex) => {
+        if (!hintSlides.length) return
+        hintIndex = (nextIndex + hintSlides.length) % hintSlides.length
+        hintSlides.forEach((slide, idx) => slide.classList.toggle('active', idx === hintIndex))
+      }
+
       if (hintsToggle && hintsPanel) {
         hintsToggle.addEventListener('click', () => {
           const open = hintsPanel.classList.toggle('open')
@@ -1297,6 +1308,19 @@
           hintsToggle.blur()
         })
       }
+      if (hintPrev) {
+        hintPrev.addEventListener('click', () => {
+          showHint(hintIndex - 1)
+          hintPrev.blur()
+        })
+      }
+      if (hintNext) {
+        hintNext.addEventListener('click', () => {
+          showHint(hintIndex + 1)
+          hintNext.blur()
+        })
+      }
+      showHint(0)
 
       if ('ResizeObserver' in window)
         new ResizeObserver(() => resizeCanvas()).observe(canvas)
