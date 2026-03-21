@@ -1,0 +1,164 @@
+% Resume for Joseph Miano
+% Built with altacv.cls (v1.2) by LianTze Lim, licensed under LPPL v1.3+.
+
+\documentclass[9.5pt,letterpaper,ragged2e]{altacv}
+
+\geometry{left=.6cm,right=.6cm,top=.6cm,bottom=.6cm,columnsep=.6cm}
+
+\usepackage{paracol}
+\usepackage{hyperref}
+\usepackage{academicons}
+\usepackage{fontawesome}
+\usepackage[none]{hyphenat}
+\setlength{\emergencystretch}{3em}
+
+\ifxetexorluatex
+  \setmainfont{Lato}
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage[default]{lato}
+\fi
+
+\definecolor{VividPurple}{HTML}{0066ff}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{5B5B5B}
+\colorlet{heading}{VividPurple}
+\colorlet{accent}{VividPurple}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+\renewcommand{\itemmarker}{{\small\textbullet}}
+\renewcommand{\ratingmarker}{\faCircle}
+
+\addbibresource{sample.bib}
+
+\begin{document}
+\name{Joseph Miano}
+\tagline{Machine Learning Engineer | Solution Architect | Team Lead \\6+ years of experience leading and implementing AI projects}
+\personalinfo{%
+  \printinfo{\faGlobe}{\href{https://www.josephmiano.com}{josephmiano.com}}
+  \linkedin{\href{https://www.linkedin.com/in/joseph-miano}{linkedin.com/in/joseph-miano}}
+  \github{\href{https://github.com/jmiano}{github.com/jmiano}}
+  \printinfo{\aiGoogleScholar}{\href{https://scholar.google.com/citations?user=P4LGsnYAAAAJ&hl=en}{bit.ly/jmiano-papers}}
+  \email{\href{mailto:j.miano@outlook.com}{j.miano@outlook.com}}\hspace{1.064cm}
+}
+
+\makecvheader
+
+\AtBeginEnvironment{itemize}{\small}
+
+\columnratio{0.62}
+
+\begin{paracol}{2}
+
+\vspace{-0.016cm}
+\cvsection{Work Experience}
+
+\cveventcus{Applied Machine Learning Engineer}{Fireworks AI}{Jun 2025 -- Mar 2026}{Full-time}{San Francisco, CA}
+\begin{itemize}
+\item Fine-tuned and deployed open GenAI models (LLMs and VLMs), including data curation, LoRA / QLoRA training, evaluation, containerization, and rollout, supporting RAG, agent, and multimodal customer solutions
+\item Integrated customer feedback to improve the Fireworks AI platform, removing blockers and enhancing the user experience
+\item Drove adoption of Fireworks AI by publishing tutorials, detailed API docs, and demo applications that shortened onboarding time and grew the developer base
+\end{itemize}
+\divider
+
+\cveventcus{Senior ML Engineer $\rightarrow$ GenAI Lead}{Superlinear}{Mar 2023 -- Apr 2025}{Full-time}{Brussels, Belgium}
+\begin{itemize}
+\item Led a team of 8 GenAI-focused machine learning engineers supporting a project portfolio valued at €1M+ in yearly revenue
+\item Coordinated the development and deployment of a pharma client's first GenAI app, unlocking €50k+ of yearly savings via automatic translation and PII detection
+% \item Modeled patient outcomes after surgery using XGBoost for a project with a medical partner, facilitating patient expectation management and clinical outcome prediction
+\item Generated €250k+ revenue via technical presales, including solution architecture design, proposal crafting, and presentations to key stakeholders
+\end{itemize}
+\divider
+
+\cveventcus{Senior Data Scientist (AI \& ML)}{JPMorgan Chase}{Feb 2022 -- Mar 2023}{Full-time}{New York, NY}
+\begin{itemize}
+\item Engineered 100+ features and trained ML models to predict fraudulent customer authentication events, balancing customer service experience with fraud risk
+\item Coordinated the explainable AI track for the inaugural 2022 JPMorgan Chase AI Summit, which brought together 10+ speakers and 100+ attendees
+\end{itemize}
+\divider
+
+\cveventcus{Graduate Research Assistant (AI \& ML)}{Georgia Tech Research Institute}{Sep 2020 -- Dec 2021}{Part-time}{Atlanta, GA}
+\begin{itemize}
+\item Implemented neural natural language processing models (RoBERTa) to automate COVID-19 outbreak detection using web-scraped news article contents
+\item Published a paper as first author in the Springer Lecture Notes in Artificial Intelligence as part of the 2021 Artificial Intelligence in Medicine Conference
+\end{itemize}
+\divider
+
+\cveventcus{Research Assistant (AI \& ML)}{Neural Data Science Lab}{Aug 2018 -- Jul 2020}{Part-time}{Atlanta, GA}
+\begin{itemize}
+\item Engineered a novel multi-task convolutional neural network architecture for joint microstructure segmentation and brain area classification of mouse brain x-ray data
+\item Presented a joint poster at the Allen Institute BioImage Informatics 2019 Conference (funded with PURA Travel Award)
+\end{itemize}
+\divider
+
+\cveventcustroph{Consultant $\rightarrow$ Senior Consultant}{CVS Health}{Aug 2016 -- Apr 2018}{Full-time}{Woonsocket, RI}{Breakthrough Award for Outstanding Achievement}
+\begin{itemize}
+\item Developed predictive models to identify patients at risk of non-adherence, enabling targeted outreach programs across 5,000+ CVS stores nationwide, improving medication adherence rates in outcomes-based contracts
+\item Quality-tested 50+ features for an enterprise-level predictive modeling project in collaboration with stakeholders from several departments
+% \item Coordinated onboarding for 8 new hires and guided curriculum development of the onboarding program, including the addition of a new SQL training
+\end{itemize}
+
+
+
+
+\switchcolumn
+\vspace{-0.008cm}
+\cvsection{Papers}
+
+\small{
+\paper{\aiSpringerSquare}{\href{https://link.springer.com/chapter/10.1007/978-3-030-77211-6_21}{Using Event-Based Web-Scraping Methods and Bidirectional Transformers to Characterize COVID-19 Outbreaks in Food Production and Retail Settings}}\\
+\paper{\aiIEEE}{\href{https://ieeexplore.ieee.org/abstract/document/9506174}{Multi-Scale Modeling of Neural Structure in X-Ray Imagery}}{}\\
+\paper{\faLineChart}{\href{https://proceedings.mlr.press/v161/lin21c.html}{Bayesian optimization for modular black-box systems with switching costs}}{}\\
+\paper{\aibioRxiv}{\href{https://www.nature.com/articles/s41597-020-00692-y}{A three-dimensional thalamocortical dataset for characterizing brain heterogeneity}}{}\\
+\paper{\faGraduationCap}{\href{https://repository.gatech.edu/entities/publication/5516d150-8241-43d4-897c-60e61f9ffe4b}{Multi-task learning for neural image classification and segmentation using a 3D/2D contextual U-Net model}}{}
+}
+
+
+\cvsection{Skills}
+
+\cvachievement{\faLaptop}{Areas of Expertise}{}
+\cvtag{LLMs}\cvtag{NLP}\cvtag{RAG}\cvtag{Agents}\cvtag{Fine-tuning}\\\cvtag{Computer Vision}\cvtag{Team Leadership}
+
+\divider
+
+\cvachievement{\faCode}{Programming}{}
+\cvtag{Python}\cvtag{Go}\cvtag{PyTorch}\cvtag{SQL}\cvtag{Java}
+
+\divider
+
+\cvachievement{\faBrain}{AI \& ML}{}
+\cvtag{Hugging Face} \cvtag{LlamaIndex} \cvtag{OpenAI} \cvtag{Claude} \cvtag{Unsloth} \cvtag{Ragas} \cvtag{LangChain} \cvtag{Azure Search}\\
+
+\divider
+
+\cvachievement{\faBarChart}{Visualization}{}
+\cvtag{Matplotlib} \cvtag{Plotly} \cvtag{Streamlit} \cvtag{Tableau}
+
+\divider
+
+\cvachievement{\faCloud}{DevOps \& Cloud}{}
+\cvtag{Kubernetes} \cvtag{Docker} \cvtag{Azure} \cvtag{GCP} \cvtag{AWS} \\ \cvtag{Git} \cvtag{APIs} \cvtag{CI/CD} \cvtag{Terraform}
+
+% \cvsection{Languages}
+% \begin{description}
+% \item English $\cdot$ French $\cdot$ Spanish
+% \end{description}
+
+\cvsection{Education}
+
+\cvevent{M.S.\ in Computer Science \scriptsize{\textit{(GPA: 3.90 / 4.00)}}}{Georgia Institute of Technology}{Aug 2020 -- Dec 2021}{Atlanta, GA}
+
+\divider
+
+\cvevent{B.S.\ in Computer Science \scriptsize{\textit{(GPA: 3.92 / 4.00)}}}{Georgia Institute of Technology}{May 2018 -- May 2020}{Atlanta, GA}
+
+\divider
+
+\cvevent{B.S.\ in Neuroscience \scriptsize{\textit{(GPA: 3.95 / 4.00)}}}{University of Miami}{Aug 2012 -- May 2016}{Coral Gables, FL}
+
+
+\end{paracol}
+
+\end{document}
