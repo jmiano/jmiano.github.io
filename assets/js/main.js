@@ -1188,8 +1188,18 @@
 
       const resetEggCrackState = () => {
         if (easterEgg) easterEgg.classList.remove('is-cracking')
-        if (eggMotion) eggMotion.style.transform = ''
-        if (eggShell) eggShell.style.transform = ''
+        if (eggMotion) {
+          eggMotion.style.animation = 'none'
+          eggMotion.style.transform = ''
+          void eggMotion.offsetWidth
+          eggMotion.style.animation = ''
+        }
+        if (eggShell) {
+          eggShell.style.animation = 'none'
+          eggShell.style.transform = ''
+          void eggShell.offsetWidth
+          eggShell.style.animation = ''
+        }
       }
 
       const openEggGarden = async () => {
