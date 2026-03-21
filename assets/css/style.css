@@ -1255,25 +1255,97 @@ section {
   background: transparent;
 }
 .easter-egg-motion {
-  display: block;
+  display: inline-block;
   transform-origin: 50% 86%;
   will-change: transform;
   animation: egg-rock 5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
 }
-.easter-egg-icon {
+.easter-egg-shell {
+  position: relative;
   display: block;
   width: 4rem;
-  height: auto;
+  aspect-ratio: 5 / 7;
+  transform-origin: 50% 86%;
+  will-change: transform;
+  animation: egg-hop 5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+.easter-egg-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   transition: filter 0.25s ease, opacity 0.32s ease;
   pointer-events: none;
   will-change: transform, filter, opacity;
-  animation: egg-hop 5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
   filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+}
+.easter-egg-icon-whole {
+  position: relative;
+  z-index: 2;
+}
+.easter-egg-half {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 0.12s ease, transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.easter-egg-half-left {
+  clip-path: polygon(0 0, 57% 0, 48% 18%, 56% 34%, 46% 50%, 54% 69%, 49% 85%, 55% 100%, 0 100%);
+  transform-origin: 72% 88%;
+}
+.easter-egg-half-right {
+  clip-path: polygon(57% 0, 100% 0, 100% 100%, 55% 100%, 49% 85%, 54% 69%, 46% 50%, 56% 34%, 48% 18%);
+  transform-origin: 28% 88%;
+}
+.easter-egg-core {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  width: 1.55rem;
+  height: 1.15rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 102, 255, 0.08);
+  box-shadow: 0 12px 28px rgba(11, 41, 77, 0.16);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform: translate(-50%, -50%) scale(0.38);
+  transition:
+    opacity 0.14s ease 0.12s,
+    transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s,
+    box-shadow 0.42s ease 0.08s;
 }
 .easter-egg-trigger:hover .easter-egg-icon {
   filter:
     drop-shadow(0 0 10px rgba(255, 255, 255, 0.45))
     drop-shadow(0 0 18px rgba(0, 102, 255, 0.25));
+}
+.easter-egg-trigger.is-cracking .easter-egg-motion,
+.easter-egg-trigger.is-cracking .easter-egg-shell {
+  animation: none;
+}
+.easter-egg-trigger.is-cracking .easter-egg-icon-whole {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.easter-egg-trigger.is-cracking .easter-egg-half {
+  opacity: 1;
+}
+.easter-egg-trigger.is-cracking .easter-egg-half-left {
+  transform: translate(-14%, -7%) rotate(-18deg);
+}
+.easter-egg-trigger.is-cracking .easter-egg-half-right {
+  transform: translate(14%, -5%) rotate(20deg);
+}
+.easter-egg-trigger.is-cracking .easter-egg-core {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  box-shadow: 0 16px 34px rgba(11, 41, 77, 0.18);
 }
 @keyframes egg-rock {
   0%   { transform: rotate(0deg); }
@@ -1369,6 +1441,12 @@ section {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
+}
+.neural-garden-morph-card.is-seed {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 102, 255, 0.08);
+  box-shadow: 0 14px 40px rgba(11, 41, 77, 0.12);
 }
 .neural-garden-morph-content {
   position: absolute;

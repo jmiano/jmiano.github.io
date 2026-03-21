@@ -1122,6 +1122,10 @@
 
       const easterEgg = select('.easter-egg-trigger')
       const gardenClose = select('.neural-garden-close')
+      const eggMotion = select('.easter-egg-motion')
+      const eggShell = select('.easter-egg-shell')
+      const eggCore = select('.easter-egg-core')
+      const EGG_CRACK_MS = 360
       const EGG_MORPH_MS = 420
       let eggAnimating = false
 
@@ -1178,15 +1182,31 @@
         neuralGarden.style.transition = ''
       }
 
+      const freezeEggPose = () => {
+        if (eggMotion) eggMotion.style.transform = window.getComputedStyle(eggMotion).transform
+        if (eggShell) eggShell.style.transform = window.getComputedStyle(eggShell).transform
+      }
+
+      const resetEggCrackState = () => {
+        if (easterEgg) easterEgg.classList.remove('is-cracking')
+        if (eggMotion) eggMotion.style.transform = ''
+        if (eggShell) eggShell.style.transform = ''
+      }
+
       const openEggGarden = async () => {
         if (!easterEgg || !neuralGarden || eggAnimating) return
         eggAnimating = true
+        easterEgg.style.pointerEvents = 'none'
+        freezeEggPose()
+        easterEgg.classList.add('is-cracking')
 
-        const startRect = easterEgg.getBoundingClientRect()
+        await new Promise(resolve => window.setTimeout(resolve, EGG_CRACK_MS))
+
+        const startRect = eggCore ? eggCore.getBoundingClientRect() : easterEgg.getBoundingClientRect()
         const card = createEggMorph(startRect, false)
+        card.classList.add('is-seed')
 
         easterEgg.style.opacity = '0'
-        easterEgg.style.pointerEvents = 'none'
         easterEgg.style.display = 'none'
 
         neuralGarden.classList.add('is-content-hidden')
@@ -1206,6 +1226,7 @@
         easterEgg.style.display = 'none'
         easterEgg.style.opacity = ''
         easterEgg.style.pointerEvents = ''
+        resetEggCrackState()
         neuralGarden.style.display = 'block'
         neuralGarden.style.pointerEvents = 'none'
         neuralGarden.style.transform = ''
@@ -1225,6 +1246,7 @@
         const startRect = neuralGarden.getBoundingClientRect()
         const card = createEggMorph(startRect, true)
 
+        resetEggCrackState()
         easterEgg.style.display = 'flex'
         easterEgg.style.opacity = '0'
         easterEgg.style.transition = 'none'
