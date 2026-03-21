@@ -701,7 +701,7 @@
           for (let a = 0; a < 8; a++)
             trainData.push({ pix: DIGITS[d].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06), label: d })
 
-        const lr = 0.5, totalEpochs = 500, epochsPerFrame = 3
+        const lr = 0.5, totalEpochs = 100, epochsPerFrame = 1
         let epoch = 0, lastAcc = 0
 
         const shuffle = (arr) => {
@@ -1040,6 +1040,16 @@
           btn.blur()
         })
       })
+
+      const hintsToggle = select('.neural-garden-hints-toggle')
+      const hintsPanel = select('.neural-garden-hints')
+      if (hintsToggle && hintsPanel) {
+        hintsToggle.addEventListener('click', () => {
+          const open = hintsPanel.classList.toggle('open')
+          hintsToggle.textContent = open ? 'Hide Hints' : 'Hints'
+          hintsToggle.blur()
+        })
+      }
 
       if ('ResizeObserver' in window)
         new ResizeObserver(() => resizeCanvas()).observe(canvas)

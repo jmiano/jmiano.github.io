@@ -517,8 +517,17 @@
               <h3>Neural Garden</h3>
               <p>Click inside a layer column to add neurons. The network runs a real forward pass with sigmoid activations and softmax output.</p>
             </div>
-            <div class="neural-garden-controls">
+            <div class="neural-garden-controls" style="position: relative;">
+              <button type="button" class="neural-garden-btn neural-garden-btn-secondary neural-garden-hints-toggle">Hints</button>
               <button type="button" class="neural-garden-btn neural-garden-btn-secondary" data-neural-action="clear">Reset</button>
+              <div class="neural-garden-hints">
+                <ul>
+                  <li>Try adding 15 input neurons, 1 for each input pixel</li>
+                  <li>Make sure you have enough hidden neurons (5+ per hidden layer)</li>
+                  <li>Try training several times. The network keeps learning across runs</li>
+                  <li>More hidden neurons = more capacity to distinguish digits</li>
+                </ul>
+              </div>
             </div>
           </div>
 
