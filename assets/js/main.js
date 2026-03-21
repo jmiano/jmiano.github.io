@@ -1125,7 +1125,6 @@
       const eggMotion = select('.easter-egg-motion')
       const eggShell = select('.easter-egg-shell')
       const eggCore = select('.easter-egg-core')
-      const eggCorePreview = select('.easter-egg-core-preview')
       const gardenContent = select('.neural-garden-content')
       const EGG_CRACK_MS = 360
       const EGG_MORPH_MS = 420
@@ -1151,15 +1150,11 @@
         window.setTimeout(finish, EGG_MORPH_MS + 20)
       })
 
-      const createEggMorph = (rect, expanded, contentNode = null) => {
+      const createEggMorph = (rect, expanded) => {
         clearEggMorph()
         const card = document.createElement('div')
         card.className = 'neural-garden-morph-card'
         if (expanded) card.classList.add('is-expanded')
-        const cardContent = document.createElement('div')
-        cardContent.className = 'neural-garden-morph-content'
-        if (contentNode) cardContent.appendChild(contentNode)
-        card.appendChild(cardContent)
         card.style.top = `${rect.top}px`
         card.style.left = `${rect.left}px`
         card.style.width = `${rect.width}px`
@@ -1184,102 +1179,6 @@
         neuralGarden.style.pointerEvents = ''
         neuralGarden.style.transform = ''
         neuralGarden.style.transition = ''
-      }
-
-      const withRenderableGarden = (callback) => {
-        if (!neuralGarden) return callback(0, 0)
-
-        const prevDisplay = neuralGarden.style.display
-        const prevVisibility = neuralGarden.style.visibility
-        const prevPointerEvents = neuralGarden.style.pointerEvents
-        const prevTransform = neuralGarden.style.transform
-        const prevTransition = neuralGarden.style.transition
-        const wasHidden = prevDisplay === 'none'
-
-        if (wasHidden) {
-          neuralGarden.style.display = 'block'
-          neuralGarden.style.visibility = 'hidden'
-          neuralGarden.style.pointerEvents = 'none'
-          neuralGarden.style.transform = 'none'
-          neuralGarden.style.transition = 'none'
-          resizeCanvas()
-        }
-
-        const rect = neuralGarden.getBoundingClientRect()
-        const width = Math.max(Math.round(rect.width), 1)
-        const height = Math.max(Math.round(rect.height), 1)
-        const result = callback(width, height)
-
-        if (wasHidden) {
-          neuralGarden.style.display = prevDisplay
-          neuralGarden.style.visibility = prevVisibility
-          neuralGarden.style.pointerEvents = prevPointerEvents
-          neuralGarden.style.transform = prevTransform
-          neuralGarden.style.transition = prevTransition
-        }
-
-        return result
-      }
-
-      const createGardenPreviewNode = (targetWidth, targetHeight, animateToFull = false) => {
-        if (!gardenContent || !targetWidth || !targetHeight) return null
-
-        return withRenderableGarden((width, height) => {
-          const gardenStyles = window.getComputedStyle(neuralGarden)
-          const liveCanvas = neuralGarden.querySelector('#neural-garden-canvas')
-          const clonedContent = gardenContent.cloneNode(true)
-          clonedContent.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'))
-
-          const clonedCanvas = clonedContent.querySelector('canvas')
-          if (liveCanvas && clonedCanvas) {
-            let previewStageNode = null
-            try {
-              const previewStageImage = document.createElement('img')
-              previewStageImage.className = 'neural-garden-preview-stage-image'
-              previewStageImage.alt = ''
-              previewStageImage.draggable = false
-              previewStageImage.src = liveCanvas.toDataURL()
-              previewStageNode = previewStageImage
-            } catch (err) {
-              const previewStageFallback = document.createElement('div')
-              previewStageFallback.className = 'neural-garden-preview-stage-fallback'
-              previewStageNode = previewStageFallback
-            }
-            clonedCanvas.replaceWith(previewStageNode)
-          }
-
-          const previewViewport = document.createElement('div')
-          previewViewport.className = 'neural-garden-preview-viewport'
-
-          const previewRoot = document.createElement('div')
-          previewRoot.className = 'neural-garden-preview-root'
-          previewRoot.style.width = `${width}px`
-          previewRoot.style.height = `${height}px`
-          previewRoot.style.padding = gardenStyles.padding
-          previewRoot.appendChild(clonedContent)
-
-          const scale = Math.min(targetWidth / width, targetHeight / height)
-          const offsetX = (targetWidth - width * scale) / 2
-          const offsetY = (targetHeight - height * scale) / 2
-          previewRoot.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
-          if (animateToFull)
-            previewRoot.style.transition = `transform ${EGG_MORPH_MS}ms cubic-bezier(0.2, 0.8, 0.2, 1)`
-          else
-            previewRoot.style.transition = 'none'
-
-          previewViewport.appendChild(previewRoot)
-          return previewViewport
-        })
-      }
-
-      const refreshEggCorePreview = () => {
-        if (!eggCorePreview) return null
-        const previewWidth = eggCore.clientWidth || eggCore.offsetWidth
-        const previewHeight = eggCore.clientHeight || eggCore.offsetHeight
-        const previewNode = createGardenPreviewNode(previewWidth, previewHeight, false)
-        eggCorePreview.replaceChildren()
-        if (previewNode) eggCorePreview.appendChild(previewNode)
-        return previewNode
       }
 
       const freezeEggPose = () => {
@@ -1344,7 +1243,6 @@
         const card = createEggMorph(startRect, true)
 
         resetEggCrackState()
-        refreshEggCorePreview()
         easterEgg.style.display = 'flex'
         easterEgg.style.opacity = '0'
         easterEgg.style.transition = 'none'
@@ -1366,7 +1264,6 @@
         easterEgg.style.transition = ''
         easterEgg.style.opacity = ''
         easterEgg.style.pointerEvents = ''
-        refreshEggCorePreview()
         eggAnimating = false
       }
 
@@ -1392,7 +1289,7 @@
       else
         window.addEventListener('resize', resizeCanvas)
 
-      window.addEventListener('resize', refreshEggCorePreview)
+
 
       document.addEventListener('visibilitychange', () => { lastTime = performance.now() })
 
@@ -1407,7 +1304,6 @@
       initOutput()
       resizeCanvas()
       updateCounters()
-      refreshEggCorePreview()
       lastTime = performance.now()
       requestAnimationFrame(animate)
     }

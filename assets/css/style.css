@@ -1323,58 +1323,6 @@ section {
     box-shadow 0.42s ease 0.08s;
   overflow: hidden;
 }
-.easter-egg-core-preview,
-.neural-garden-morph-content {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-}
-.neural-garden-morph-content {
-  pointer-events: none;
-}
-.neural-garden-preview-viewport {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-}
-.neural-garden-preview-root {
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-  transform-origin: top left;
-  will-change: transform;
-}
-.neural-garden-preview-root,
-.neural-garden-preview-root * {
-  pointer-events: none !important;
-  animation: none !important;
-  transition: none !important;
-}
-.neural-garden-preview-root .neural-garden-content {
-  height: 100%;
-}
-.neural-garden-preview-root .neural-garden-hints {
-  display: none !important;
-}
-.neural-garden-preview-root canvas {
-  display: none !important;
-}
-.neural-garden-preview-root .neural-garden-preview-stage-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-.neural-garden-preview-root .neural-garden-preview-stage-fallback {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background: #0a1628;
-}
 .easter-egg-trigger:hover .easter-egg-icon {
   filter:
     brightness(1.04)
