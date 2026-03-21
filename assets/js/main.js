@@ -490,7 +490,7 @@
         if (nIn === 0)
           statusEl.textContent = 'Click in the Input column to add pixel features (need ' + NPIX + ' for full coverage).'
         else if (nIn < NPIX)
-          statusEl.textContent = nIn + '/' + NPIX + ' input features placed. Add more or add hidden neurons and train.'
+          statusEl.textContent = nIn + '/' + NPIX + ' input pixels mapped. Add more or add hidden neurons and train.'
         else if (conns.length === 0)
           statusEl.textContent = 'All ' + NPIX + ' inputs placed! Add hidden neurons to connect layers, then train.'
         else if (currentDigit < 0)
@@ -514,7 +514,21 @@
       const addNeuron = (px, py) => {
         const zone = whichZone(px)
         if (zone < 0) return -1
-        if (zone === 0 && layers[0].length >= NPIX) return -1
+        if (zone === 0 && layers[0].length >= NPIX) {
+          statusEl.textContent = 'All ' + NPIX + ' input pixels are already mapped. Cannot add more input neurons.'
+          statusEl.style.transition = 'none'
+          statusEl.style.opacity = '1'
+          setTimeout(() => {
+            statusEl.style.transition = 'opacity 0.6s ease'
+            statusEl.style.opacity = '0'
+            setTimeout(() => {
+              syncStats()
+              statusEl.style.transition = 'opacity 0.4s ease'
+              statusEl.style.opacity = '1'
+            }, 600)
+          }, 1500)
+          return -1
+        }
         const idx = neurons.length
         neurons.push({
           x: ZX[zone] * W, y: py,
@@ -600,7 +614,10 @@
         statusEl.textContent = 'Forward pass: digit ' + currentDigit + '\u2026'
       }
 
+      let isTraining = false
+
       const trainNetwork = () => {
+        if (isTraining) return
         const filled = []
         for (let li = 0; li < NZONES; li++)
           if (layers[li].length > 0) filled.push(li)
@@ -608,64 +625,26 @@
           statusEl.textContent = 'Add input neurons first!'; return
         }
         if (conns.length === 0) {
-          statusEl.textContent = 'No connections \u2014 add hidden neurons to bridge layers.'; return
+          statusEl.textContent = 'No connections. Add hidden neurons to bridge layers.'; return
         }
 
-        const lr = 0.5, epochs = 1000
-        for (let ep = 0; ep < epochs; ep++) {
-          for (let d = 0; d < 10; d++) {
-            const pix = DIGITS[d]
-
-            for (const idx of layers[0])
-              neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (pix[neurons[idx].pixelIndex] || 0) : 0
-
-            for (let k = 1; k < filled.length; k++) {
-              const li = filled[k], pl = filled[k - 1]
-              for (const idx of layers[li]) {
-                let s = neurons[idx].bias
-                for (const c of conns)
-                  if (c.to === idx && neurons[c.from].layer === pl)
-                    s += neurons[c.from].fwdAct * c.weight
-                if (li === 3) neurons[idx].rawLogit = s
-                else neurons[idx].fwdAct = sigmoid(s)
-              }
-            }
-
-            const logits = layers[3].map(i => neurons[i].rawLogit || 0)
-            const mx = Math.max(...logits)
-            const exps = logits.map(l => Math.exp(l - mx))
-            const tot = exps.reduce((a, b) => a + b, 0)
-            layers[3].forEach((idx, i) => { neurons[idx].fwdAct = exps[i] / tot })
-
-            layers[3].forEach(idx => {
-              neurons[idx].delta = neurons[idx].fwdAct - (neurons[idx].digitLabel === d ? 1 : 0)
-            })
-
-            for (let k = filled.length - 2; k >= 1; k--) {
-              const li = filled[k], nl = filled[k + 1]
-              for (const idx of layers[li]) {
-                let gs = 0
-                for (const c of conns)
-                  if (c.from === idx && neurons[c.to].layer === nl)
-                    gs += c.weight * neurons[c.to].delta
-                neurons[idx].delta = gs * neurons[idx].fwdAct * (1 - neurons[idx].fwdAct)
-              }
-            }
-
-            for (const c of conns) {
-              c.weight -= lr * neurons[c.from].fwdAct * neurons[c.to].delta
-              wCache.set(c.from + ',' + c.to, c.weight)
-            }
-            for (let k = 1; k < filled.length; k++)
-              for (const idx of layers[filled[k]])
-                neurons[idx].bias -= lr * neurons[idx].delta
+        isTraining = true
+        const trainData = []
+        for (let d = 0; d < 10; d++) {
+          trainData.push({ pix: DIGITS[d], label: d })
+          for (let a = 0; a < 4; a++) {
+            const noisy = DIGITS[d].map(v => Math.random() < 0.08 ? (1 - v) : v)
+            trainData.push({ pix: noisy, label: d })
           }
         }
 
-        let correct = 0
-        for (let d = 0; d < 10; d++) {
+        const lr = 0.3, totalEpochs = 500, batchSize = 25
+        let epoch = 0
+
+        const runOneSample = (pix, label) => {
           for (const idx of layers[0])
-            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
+            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (pix[neurons[idx].pixelIndex] || 0) : 0
+
           for (let k = 1; k < filled.length; k++) {
             const li = filled[k], pl = filled[k - 1]
             for (const idx of layers[li]) {
@@ -673,17 +652,76 @@
               for (const c of conns)
                 if (c.to === idx && neurons[c.from].layer === pl)
                   s += neurons[c.from].fwdAct * c.weight
-              neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
+              if (li === 3) neurons[idx].rawLogit = s
+              else neurons[idx].fwdAct = sigmoid(s)
             }
           }
-          let bestI = 0
-          for (let i = 1; i < layers[3].length; i++)
-            if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
-          if (neurons[layers[3][bestI]].digitLabel === d) correct++
+
+          const logits = layers[3].map(i => neurons[i].rawLogit || 0)
+          const mx = Math.max(...logits)
+          const exps = logits.map(l => Math.exp(l - mx))
+          const tot = exps.reduce((a, b) => a + b, 0)
+          layers[3].forEach((idx, i) => { neurons[idx].fwdAct = exps[i] / tot })
+
+          layers[3].forEach(idx => {
+            neurons[idx].delta = neurons[idx].fwdAct - (neurons[idx].digitLabel === label ? 1 : 0)
+          })
+
+          for (let k = filled.length - 2; k >= 1; k--) {
+            const li = filled[k], nl = filled[k + 1]
+            for (const idx of layers[li]) {
+              let gs = 0
+              for (const c of conns)
+                if (c.from === idx && neurons[c.to].layer === nl)
+                  gs += c.weight * neurons[c.to].delta
+              neurons[idx].delta = gs * neurons[idx].fwdAct * (1 - neurons[idx].fwdAct)
+            }
+          }
+
+          for (const c of conns) {
+            c.weight -= lr * neurons[c.from].fwdAct * neurons[c.to].delta
+            wCache.set(c.from + ',' + c.to, c.weight)
+          }
+          for (let k = 1; k < filled.length; k++)
+            for (const idx of layers[filled[k]])
+              neurons[idx].bias -= lr * neurons[idx].delta
         }
 
-        statusEl.textContent = 'Trained! Accuracy: ' + correct + '/10. Pick a digit to test.'
-        if (currentDigit >= 0) runPredict()
+        const trainBatch = () => {
+          for (let b = 0; b < batchSize && epoch < totalEpochs; b++, epoch++)
+            for (const sample of trainData)
+              runOneSample(sample.pix, sample.label)
+
+          statusEl.textContent = 'Training... ' + Math.round(epoch / totalEpochs * 100) + '%'
+
+          if (epoch < totalEpochs) {
+            requestAnimationFrame(trainBatch)
+          } else {
+            isTraining = false
+            let correct = 0
+            for (let d = 0; d < 10; d++) {
+              for (const idx of layers[0])
+                neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
+              for (let k = 1; k < filled.length; k++) {
+                const li = filled[k], pl = filled[k - 1]
+                for (const idx of layers[li]) {
+                  let s = neurons[idx].bias
+                  for (const c of conns)
+                    if (c.to === idx && neurons[c.from].layer === pl)
+                      s += neurons[c.from].fwdAct * c.weight
+                  neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
+                }
+              }
+              let bestI = 0
+              for (let i = 1; i < layers[3].length; i++)
+                if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
+              if (neurons[layers[3][bestI]].digitLabel === d) correct++
+            }
+            statusEl.textContent = 'Trained! Accuracy: ' + correct + '/10. Pick a digit to test.'
+          }
+        }
+
+        trainBatch()
       }
 
       const clearAll = () => {
@@ -834,15 +872,18 @@
           }
         }
 
+        const maxW = conns.length > 0 ? conns.reduce((mx, c) => Math.max(mx, Math.abs(c.weight)), 0.01) : 1
+
         for (const c of conns) {
           const a = neurons[c.from], b = neurons[c.to]
           const hot = c.pulse > 0 && c.pulse < 1
-          const wA = Math.abs(c.weight), t = (c.weight + 1) / 2
+          const wNorm = Math.abs(c.weight) / maxW
+          const t = Math.max(0, Math.min(1, (c.weight / maxW + 1) / 2))
           const cR = Math.round(160 * (1 - t) + 80 * t)
           const cG = Math.round(80 * (1 - t) + 170 * t)
           const cB = Math.round(255 * (1 - t) + 255 * t)
-          ctx.strokeStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + (0.15 + wA * 0.2) + ')'
-          ctx.lineWidth = 0.5 + wA * 0.6
+          ctx.strokeStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + (0.15 + wNorm * 0.2) + ')'
+          ctx.lineWidth = 0.5 + wNorm * 0.6
           ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke()
 
           if (hot) {
