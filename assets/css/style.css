@@ -1242,13 +1242,123 @@ section {
 .contact-social a:hover {
   opacity: 0.7;
 }
+.easter-egg-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  width: fit-content;
+  cursor: pointer;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 20px;
+  background: #0066ff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 102, 255, 0.25);
+}
+.easter-egg-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 102, 255, 0.3);
+}
+.easter-egg-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: transform 0.3s ease, opacity 0.32s ease;
+}
+.easter-egg-trigger:hover .easter-egg-icon {
+  transform: scale(1.15) rotate(10deg);
+}
+.easter-egg-label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: opacity 0.32s ease;
+}
+.easter-egg-trigger.is-content-hidden .easter-egg-icon,
+.easter-egg-trigger.is-content-hidden .easter-egg-label {
+  opacity: 0;
+}
+.neural-garden-morph-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: #0066ff;
+  box-shadow: 0 6px 18px rgba(0, 102, 255, 0.25);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9999;
+  transition:
+    top 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    left 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-radius 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.42s ease,
+    box-shadow 0.42s ease,
+    border-color 0.42s ease;
+}
+.neural-garden-morph-card.is-expanded {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 102, 255, 0.08);
+  box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
+}
+.neural-garden-morph-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
+  padding: 0.7rem 1.4rem;
+  white-space: nowrap;
+  transition: opacity 0.16s ease, transform 0.24s ease, filter 0.24s ease;
+}
+.neural-garden-morph-card.is-expanded .neural-garden-morph-content {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  filter: blur(1px);
+}
+.neural-garden-close {
+  position: absolute;
+  top: 0.62rem;
+  left: 0.78rem;
+  border: none;
+  background: transparent;
+  color: rgba(23, 59, 108, 0.55);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.18s ease, transform 0.18s ease;
+  z-index: 5;
+}
+.neural-garden-close:hover {
+  color: #d44;
+  transform: scale(1.05);
+}
 .neural-garden {
+  position: relative;
   margin-top: 2.5rem;
   padding: 1.75rem;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
+}
+.neural-garden-content {
+  transition: opacity 0.34s ease;
+}
+.neural-garden.is-content-hidden .neural-garden-content {
+  opacity: 0;
 }
 .neural-garden-header {
   display: flex;

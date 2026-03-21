@@ -1120,6 +1120,139 @@
         })
       })
 
+      const easterEgg = select('.easter-egg-trigger')
+      const gardenClose = select('.neural-garden-close')
+      const EGG_MORPH_MS = 420
+      let eggAnimating = false
+
+      const clearEggMorph = () => {
+        const card = document.querySelector('.neural-garden-morph-card')
+        if (card) card.remove()
+      }
+
+      const waitForEggMorph = (card) => new Promise(resolve => {
+        let done = false
+        const finish = () => {
+          if (done) return
+          done = true
+          card.removeEventListener('transitionend', onEnd)
+          resolve()
+        }
+        const onEnd = (evt) => {
+          if (evt.target === card && evt.propertyName === 'height') finish()
+        }
+        card.addEventListener('transitionend', onEnd)
+        window.setTimeout(finish, EGG_MORPH_MS + 80)
+      })
+
+      const createEggMorph = (rect, expanded, includeContent = false) => {
+        clearEggMorph()
+        const card = document.createElement('div')
+        card.className = 'neural-garden-morph-card'
+        if (expanded) card.classList.add('is-expanded')
+        if (includeContent)
+          card.innerHTML = `<div class="neural-garden-morph-content">${easterEgg ? easterEgg.innerHTML : ''}</div>`
+        card.style.top = `${rect.top}px`
+        card.style.left = `${rect.left}px`
+        card.style.width = `${rect.width}px`
+        card.style.height = `${rect.height}px`
+        document.body.appendChild(card)
+        return card
+      }
+
+      const animateEggMorph = (card, rect, expanded) => {
+        requestAnimationFrame(() => {
+          card.classList.toggle('is-expanded', expanded)
+          card.style.top = `${rect.top}px`
+          card.style.left = `${rect.left}px`
+          card.style.width = `${rect.width}px`
+          card.style.height = `${rect.height}px`
+        })
+      }
+
+      const resetGardenDisplay = () => {
+        neuralGarden.style.visibility = ''
+        neuralGarden.style.opacity = ''
+        neuralGarden.style.pointerEvents = ''
+        neuralGarden.style.transform = ''
+        neuralGarden.style.transition = ''
+      }
+
+      const openEggGarden = async () => {
+        if (!easterEgg || !neuralGarden || eggAnimating) return
+        eggAnimating = true
+
+        const startRect = easterEgg.getBoundingClientRect()
+        const card = createEggMorph(startRect, false)
+
+        easterEgg.style.opacity = '0'
+        easterEgg.style.pointerEvents = 'none'
+        easterEgg.style.display = 'none'
+
+        neuralGarden.classList.add('is-content-hidden')
+        neuralGarden.style.display = 'block'
+        neuralGarden.style.visibility = 'hidden'
+        neuralGarden.style.pointerEvents = 'none'
+        neuralGarden.style.transform = 'none'
+        neuralGarden.style.transition = 'none'
+        resizeCanvas()
+
+        const endRect = neuralGarden.getBoundingClientRect()
+        animateEggMorph(card, endRect, true)
+
+        await waitForEggMorph(card)
+        neuralGarden.style.visibility = 'visible'
+        clearEggMorph()
+        easterEgg.style.display = 'none'
+        easterEgg.style.opacity = ''
+        easterEgg.style.pointerEvents = ''
+        neuralGarden.style.display = 'block'
+        neuralGarden.style.pointerEvents = 'none'
+        neuralGarden.style.transform = ''
+        neuralGarden.style.transition = ''
+        resizeCanvas()
+        requestAnimationFrame(() => {
+          neuralGarden.classList.remove('is-content-hidden')
+          neuralGarden.style.pointerEvents = ''
+        })
+        eggAnimating = false
+      }
+
+      const closeEggGarden = async () => {
+        if (!easterEgg || !neuralGarden || eggAnimating || neuralGarden.style.display === 'none') return
+        eggAnimating = true
+
+        const startRect = neuralGarden.getBoundingClientRect()
+        const card = createEggMorph(startRect, true)
+
+        easterEgg.classList.add('is-content-hidden')
+        easterEgg.style.display = 'flex'
+        easterEgg.style.visibility = 'hidden'
+        easterEgg.style.pointerEvents = 'none'
+        const endRect = easterEgg.getBoundingClientRect()
+
+        neuralGarden.style.display = 'none'
+        resetGardenDisplay()
+
+        animateEggMorph(card, endRect, false)
+
+        await waitForEggMorph(card)
+        easterEgg.style.visibility = ''
+        easterEgg.style.pointerEvents = ''
+        clearEggMorph()
+        requestAnimationFrame(() => {
+          easterEgg.classList.remove('is-content-hidden')
+        })
+        eggAnimating = false
+      }
+
+      if (easterEgg && neuralGarden) {
+        easterEgg.addEventListener('click', openEggGarden)
+      }
+      if (gardenClose && neuralGarden && easterEgg) {
+        gardenClose.addEventListener('click', closeEggGarden)
+      }
+
       const hintsToggle = select('.neural-garden-hints-toggle')
       const hintsPanel = select('.neural-garden-hints')
       if (hintsToggle && hintsPanel) {

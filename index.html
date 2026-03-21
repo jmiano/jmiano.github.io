@@ -508,55 +508,62 @@
               <a href="https://drive.google.com/file/d/1-gvNGPDhp_E4bNXWWVbYwM1vmzSOPGGY/view" target="_blank"><i class="bx bx-file"></i></a>
             </div>
           </div>
+          <div class="easter-egg-trigger" data-no-section-scroll="true">
+            <span class="easter-egg-icon">&#x1F95A;</span>
+            <span class="easter-egg-label">Easter Egg</span>
+          </div>
         </div>
 
-        <div class="neural-garden" data-no-section-scroll="true">
-          <div class="neural-garden-header">
-            <div>
-              <span class="neural-garden-badge">Interactive</span>
-              <h3>Neural Garden</h3>
-              <p>Build a neural network by clicking to add neurons. The network runs a real forward pass with sigmoid activations and softmax output to predict the input digit.</p>
-            </div>
-            <div class="neural-garden-controls" style="position: relative;">
-              <button type="button" class="neural-garden-btn neural-garden-btn-secondary neural-garden-hints-toggle">Hints</button>
-              <button type="button" class="neural-garden-btn neural-garden-btn-secondary" data-neural-action="clear">Reset</button>
-              <div class="neural-garden-hints">
-                <ul>
-                  <li>Try adding 15 input neurons, 1 for each input pixel</li>
-                  <li>Make sure you have enough hidden neurons (5+ per hidden layer)</li>
-                  <li>Try training several times. The network keeps learning across runs</li>
-                  <li>More hidden neurons = more capacity to distinguish digits</li>
-                </ul>
+        <div class="neural-garden" data-no-section-scroll="true" style="display: none;">
+          <div class="neural-garden-content">
+            <button type="button" class="neural-garden-close" aria-label="Close">&times;</button>
+            <div class="neural-garden-header">
+              <div>
+                <span class="neural-garden-badge">Interactive</span>
+                <h3>Neural Garden</h3>
+                <p>Build a neural network by clicking to add neurons. The network runs a real forward pass with sigmoid activations and softmax output to predict the input digit.</p>
+              </div>
+              <div class="neural-garden-controls" style="position: relative;">
+                <button type="button" class="neural-garden-btn neural-garden-btn-secondary neural-garden-hints-toggle">Hints</button>
+                <button type="button" class="neural-garden-btn neural-garden-btn-secondary" data-neural-action="clear">Reset</button>
+                <div class="neural-garden-hints">
+                  <ul>
+                    <li>Try adding 15 input neurons, 1 for each input pixel</li>
+                    <li>Make sure you have enough hidden neurons (5+ per hidden layer)</li>
+                    <li>Try training several times. The network keeps learning across runs</li>
+                    <li>More hidden neurons = more capacity to distinguish digits</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="neural-garden-digits" data-no-section-scroll="true">
-            <button type="button" class="neural-garden-digit" data-digit="0">0</button>
-            <button type="button" class="neural-garden-digit" data-digit="1">1</button>
-            <button type="button" class="neural-garden-digit" data-digit="2">2</button>
-            <button type="button" class="neural-garden-digit" data-digit="3">3</button>
-            <button type="button" class="neural-garden-digit" data-digit="4">4</button>
-            <button type="button" class="neural-garden-digit" data-digit="5">5</button>
-            <button type="button" class="neural-garden-digit" data-digit="6">6</button>
-            <button type="button" class="neural-garden-digit" data-digit="7">7</button>
-            <button type="button" class="neural-garden-digit" data-digit="8">8</button>
-            <button type="button" class="neural-garden-digit" data-digit="9">9</button>
-            <span style="display: inline-flex; gap: 0.5rem; flex-shrink: 0;">
-              <button type="button" class="neural-garden-btn" data-neural-action="predict" style="min-width: 5.5rem; text-align: center;">Predict</button>
-              <button type="button" class="neural-garden-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
-            </span>
-          </div>
+            <div class="neural-garden-digits" data-no-section-scroll="true">
+              <button type="button" class="neural-garden-digit" data-digit="0">0</button>
+              <button type="button" class="neural-garden-digit" data-digit="1">1</button>
+              <button type="button" class="neural-garden-digit" data-digit="2">2</button>
+              <button type="button" class="neural-garden-digit" data-digit="3">3</button>
+              <button type="button" class="neural-garden-digit" data-digit="4">4</button>
+              <button type="button" class="neural-garden-digit" data-digit="5">5</button>
+              <button type="button" class="neural-garden-digit" data-digit="6">6</button>
+              <button type="button" class="neural-garden-digit" data-digit="7">7</button>
+              <button type="button" class="neural-garden-digit" data-digit="8">8</button>
+              <button type="button" class="neural-garden-digit" data-digit="9">9</button>
+              <span style="display: inline-flex; gap: 0.5rem; flex-shrink: 0;">
+                <button type="button" class="neural-garden-btn" data-neural-action="predict" style="min-width: 5.5rem; text-align: center;">Predict</button>
+                <button type="button" class="neural-garden-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
+              </span>
+            </div>
 
-          <div class="neural-garden-stage" data-no-section-scroll="true">
-            <canvas id="neural-garden-canvas" aria-label="Interactive neural network visualization"></canvas>
-          </div>
+            <div class="neural-garden-stage" data-no-section-scroll="true">
+              <canvas id="neural-garden-canvas" aria-label="Interactive neural network visualization"></canvas>
+            </div>
 
-          <div class="neural-garden-footer">
-            <p id="neural-garden-status" style="min-height: 1.4em;"></p>
-            <div class="neural-garden-stats">
-              <span><strong id="neural-garden-neurons">0</strong> neurons</span>
-              <span><strong id="neural-garden-connections">0</strong> connections</span>
+            <div class="neural-garden-footer">
+              <p id="neural-garden-status" style="min-height: 1.4em;"></p>
+              <div class="neural-garden-stats">
+                <span><strong id="neural-garden-neurons">0</strong> neurons</span>
+                <span><strong id="neural-garden-connections">0</strong> connections</span>
+              </div>
             </div>
           </div>
         </div>
