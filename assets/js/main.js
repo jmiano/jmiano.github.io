@@ -117,18 +117,49 @@
     let targetPos = select(el).offsetTop
     let startPos = window.scrollY
     let distance = targetPos - startPos
-    let duration = 300
+    let absDist = Math.abs(distance)
+    let maxDist = Math.max(document.body.scrollHeight - window.innerHeight, 1)
+    let ratio = Math.min(Math.max(absDist / maxDist, 0.05), 1)
+
+    let maxDuration = 600
+    let minDuration = 120
+    let duration = minDuration + (maxDuration - minDuration) * ratio
     let startTime = performance.now()
+
+    // Jerk-limited motion profile: smooth throttle-up, cruise, smooth braking.
+    let accelFrac = 0.3
+    let cruiseFrac = 0.3
+    let decelFrac = 0.4
+    let peakVelocity = 1 / (0.5 * accelFrac + cruiseFrac + 0.5 * decelFrac)
+    let accelDistance = peakVelocity * accelFrac * 0.5
+    let cruiseDistance = peakVelocity * cruiseFrac
+
+    function integralSmootherstep(p) {
+      return p ** 6 - 3 * p ** 5 + 2.5 * p ** 4
+    }
+
+    function progressAt(t) {
+      if (t < accelFrac) {
+        let p = t / accelFrac
+        return peakVelocity * accelFrac * integralSmootherstep(p)
+      }
+
+      if (t < accelFrac + cruiseFrac) {
+        return accelDistance + peakVelocity * (t - accelFrac)
+      }
+
+      let p = (t - accelFrac - cruiseFrac) / decelFrac
+      return accelDistance + cruiseDistance + peakVelocity * decelFrac * (p - integralSmootherstep(p))
+    }
 
     function step(currentTime) {
       let elapsed = currentTime - startTime
-      let progress = Math.min(elapsed / duration, 1)
-      let ease = progress < 0.85 ? progress / 0.85 * 0.95 : 0.95 + (1 - Math.pow(1 - (progress - 0.85) / 0.15, 2)) * 0.05
-      window.scrollTo(0, startPos + distance * ease)
-      if (progress < 1) requestAnimationFrame(step)
+      let t = Math.min(elapsed / duration, 1)
+      window.scrollTo(0, startPos + distance * progressAt(t))
+      if (t < 1) requestAnimationFrame(step)
+      else window.scrollTo(0, targetPos)
     }
 
-    window.scrollTo(0, startPos + distance * (1 / duration * 16 / 0.85 * 0.95))
     requestAnimationFrame(step)
   }
 

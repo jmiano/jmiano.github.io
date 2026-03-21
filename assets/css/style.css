@@ -13,6 +13,10 @@ body {
   color: #272829;
 }
 
+html {
+  scroll-behavior: auto !important;
+}
+
 a {
   color: #0066ff;
   text-decoration: none;
