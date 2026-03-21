@@ -812,6 +812,7 @@
 
       const render = () => {
         ctx.clearRect(0, 0, W, H)
+        const compactOutput = W < 560
 
         for (let z = 0; z < NZONES; z++) {
           const zl = (NET_L + z * ZW) * W, zw = ZW * W
@@ -966,7 +967,7 @@
             ctx.fillStyle = 'rgba(220,235,255,' + (0.65 + n.act * 0.35) + ')'
             ctx.font = (predAlpha > 0 && n.targetAct > 0.15 ? 'bold ' : '') + '11px system-ui, sans-serif'
             ctx.textAlign = 'left'
-            const showProb = predAlpha > 0 && n.targetAct > 0.01
+            const showProb = !compactOutput && predAlpha > 0 && n.targetAct > 0.01
             const label = showProb ? n.digitLabel + ' (' + Math.round(n.targetAct * 100) + '%)' : String(n.digitLabel)
             ctx.fillText(label, n.x + n.r + 6, n.y + 4)
           }
@@ -996,15 +997,18 @@
         }
 
         if (predAlpha > 0 && prediction >= 0) {
-          const px = W * 0.93, fs = Math.min(H * 0.3, 70)
+          const px = compactOutput ? W * 0.915 : W * 0.93
+          const fs = compactOutput ? Math.min(H * 0.2, 44) : Math.min(H * 0.3, 70)
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
           ctx.fillStyle = 'rgba(200,230,255,' + predAlpha + ')'
           ctx.font = 'bold ' + fs + 'px system-ui, sans-serif'
           ctx.fillText(String(prediction), px, H * 0.45)
-          ctx.textBaseline = 'alphabetic'
-          ctx.fillStyle = 'rgba(180,215,255,' + (predAlpha * 0.7) + ')'
-          ctx.font = '9px system-ui, sans-serif'
-          ctx.fillText(Math.round(confidence * 100) + '% Confidence', px, H * 0.45 + fs * 0.5 + 14)
+          if (!compactOutput) {
+            ctx.textBaseline = 'alphabetic'
+            ctx.fillStyle = 'rgba(180,215,255,' + (predAlpha * 0.7) + ')'
+            ctx.font = '9px system-ui, sans-serif'
+            ctx.fillText(Math.round(confidence * 100) + '% Confidence', px, H * 0.45 + fs * 0.5 + 14)
+          }
         }
 
         const lgW = 80, lgH = 8
