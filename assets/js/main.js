@@ -48,6 +48,27 @@
   let clickActive = false
   let clickTarget = null
   let scrollTimeout = null
+  const clearClickLock = () => {
+    if (scrollTimeout) {
+      window.clearTimeout(scrollTimeout)
+      scrollTimeout = null
+    }
+    clickActive = false
+    clickTarget = null
+  }
+  const setClickedNavActive = (hash, duration = 0) => {
+    clickActive = true
+    clickTarget = hash
+    navbarlinks.forEach(nl => nl.classList.remove('active'))
+    let clickedLink = navbarlinks.find(nl => nl.hash === hash)
+    if (clickedLink) clickedLink.classList.add('active')
+
+    if (scrollTimeout) window.clearTimeout(scrollTimeout)
+    scrollTimeout = window.setTimeout(() => {
+      clearClickLock()
+      navbarlinksActive()
+    }, duration + 50)
+  }
   const navbarlinksActive = () => {
     if (hoverActive || clickActive) return
     let position = window.scrollY + 200
@@ -73,8 +94,7 @@
     let section = select(navbarlink.hash)
     if (!section) return
     section.addEventListener('mouseenter', () => {
-      clickActive = false
-      clickTarget = null
+      clearClickLock()
       hoverActive = true
       navbarlinks.forEach(nl => nl.classList.remove('active'))
       navbarlink.classList.add('active')
@@ -84,12 +104,21 @@
       hoverActive = false
       section.classList.remove('section-hover')
     })
+
+    section.addEventListener('click', (e) => {
+      if (e.defaultPrevented) return
+      if (e.target.closest('a, button, input, textarea, select, option, label, summary, [role="button"], [contenteditable="true"]')) return
+      if (window.getSelection && window.getSelection().toString()) return
+
+      let hash = `#${section.id}`
+      let duration = scrollto(hash)
+      setClickedNavActive(hash, duration)
+    })
   })
 
   document.addEventListener('wheel', () => {
     if (clickActive) {
-      clickActive = false
-      clickTarget = null
+      clearClickLock()
       navbarlinksActive()
     }
   })
@@ -161,6 +190,7 @@
     }
 
     requestAnimationFrame(step)
+    return duration
   }
 
   /**
@@ -196,13 +226,8 @@
       e.preventDefault()
 
       let hash = this.hash
-      scrollto(hash)
-
-      clickActive = true
-      clickTarget = hash
-      navbarlinks.forEach(nl => nl.classList.remove('active'))
-      let clickedLink = navbarlinks.find(nl => nl.hash === hash)
-      if (clickedLink) clickedLink.classList.add('active')
+      let duration = scrollto(hash)
+      setClickedNavActive(hash, duration)
 
       let body = select('body')
       if (body.classList.contains('mobile-nav-active')) {

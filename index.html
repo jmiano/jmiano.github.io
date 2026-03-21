@@ -47,7 +47,7 @@
     <div class="d-flex flex-column">
 
       <div class="profile">
-        <a href="#about" class="smooth-scroll"><img src="assets/img/Joseph-Miano.jpeg" alt="Joseph Miano Portrait" class="img-fluid rounded-circle"></a>
+        <a href="#about" class="scrollto"><img src="assets/img/Joseph-Miano.jpeg" alt="Joseph Miano Portrait" class="img-fluid rounded-circle"></a>
         <h1 class="text-light"><a href="index.html">Joseph Miano</a></h1>
         <div class="social-links mt-3 text-center">
           <a href="https://www.linkedin.com/in/joseph-miano-a5b91785/" class="linkedin" target="_blank"><i class="bx bxl-linkedin"></i></a>
@@ -102,7 +102,7 @@
             <div>
             <div style="padding: 1.25rem 1.5rem; border-radius: 12px; background: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); display: inline-block; text-align: left;">
               <ul style="margin-bottom: 0;" class="about-details">
-                <li><i class="bi bi-chevron-right" style="color: #0066ff;"></i> <strong>Focus:</strong> <span>GenAI, LLM-based apps</span></li>
+                <li><i class="bi bi-chevron-right" style="color: #0066ff;"></i> <strong>Focus:</strong> <span>GenAI, LLM applications</span></li>
                 <li><i class="bi bi-chevron-right" style="color: #0066ff;"></i> <strong>Universities:</strong> <span>Georgia Tech, UMiami</span></li>
                 <li><i class="bi bi-chevron-right" style="color: #0066ff;"></i> <strong>Degrees:</strong> <span>MS, BS</span></li>
                 <li><i class="bi bi-chevron-right" style="color: #0066ff;"></i> <strong>Location:</strong> <span>San Francisco, CA</span></li>
@@ -542,23 +542,6 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-
-  <!-- Script to scroll to page section without modifying URL -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.smooth-scroll').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault(); // Prevent the default anchor behavior
-                const targetId = this.getAttribute('href').slice(1); // Get the target id (removing the #)
-                const targetElement = document.getElementById(targetId); // Get the target element
-                
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' }); // Scroll smoothly to the target element
-                }
-            });
-        });
-    });
-    </script>
 
 </body>
 
