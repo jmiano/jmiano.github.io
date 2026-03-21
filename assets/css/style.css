@@ -556,9 +556,45 @@ section {
   background: url('../img/bullets/dask-logo.svg');
   background-repeat: no-repeat;
   background-position: left center;
-  background-size: 20px;  /* Set the size of the image here */
-  padding-left: 30px;  /* Adjust based on the size of the image and desired spacing */
-  list-style-type: none;  /* Remove the default bullet point */
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
+}
+
+.skills .huggingface-li {
+  background: url('../img/bullets/huggingface-logo.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
+}
+
+.skills .langchain-li {
+  background: url('../img/bullets/langchain-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
+}
+
+.skills .vllm-li {
+  background: url('../img/bullets/vllm-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
+}
+
+.skills .unsloth-li {
+  background: url('../img/bullets/unsloth-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
 }
 
 .skills .matplotlib-li {
