@@ -515,7 +515,7 @@
             <div>
               <span class="neural-garden-badge">Interactive</span>
               <h3>Neural Garden</h3>
-              <p>Click inside a layer column to add neurons. The network runs a real forward pass with sigmoid activations and softmax output.</p>
+              <p>Build a neural network by clicking to add neurons. The network runs a real forward pass with sigmoid activations and softmax output to predict the input digit.</p>
             </div>
             <div class="neural-garden-controls" style="position: relative;">
               <button type="button" class="neural-garden-btn neural-garden-btn-secondary neural-garden-hints-toggle">Hints</button>
@@ -542,8 +542,10 @@
             <button type="button" class="neural-garden-digit" data-digit="7">7</button>
             <button type="button" class="neural-garden-digit" data-digit="8">8</button>
             <button type="button" class="neural-garden-digit" data-digit="9">9</button>
-            <button type="button" class="neural-garden-btn" data-neural-action="predict" style="margin-left: 0.25rem; min-width: 5.5rem; text-align: center;">Predict</button>
-            <button type="button" class="neural-garden-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
+            <span style="display: inline-flex; gap: 0.5rem; flex-shrink: 0;">
+              <button type="button" class="neural-garden-btn" data-neural-action="predict" style="min-width: 5.5rem; text-align: center;">Predict</button>
+              <button type="button" class="neural-garden-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
+            </span>
           </div>
 
           <div class="neural-garden-stage" data-no-section-scroll="true">

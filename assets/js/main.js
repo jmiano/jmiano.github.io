@@ -804,7 +804,7 @@
             c.pulse = Math.min((pulseTime - t0) / dur, 1)
         }
 
-        const predT = 350 + (filled.length - 1) * lDelay + 100
+        const predT = 350 + (filled.length - 1) * lDelay + 40
         predAlpha = pulseTime > predT ? 1 : 0
         if (predAlpha > 0 && prediction >= 0 && pulseTime - dt <= predT)
           showStatus('Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence)', 3500)
@@ -815,7 +815,7 @@
 
         for (let z = 0; z < NZONES; z++) {
           const zl = (NET_L + z * ZW) * W, zw = ZW * W
-          ctx.fillStyle = z % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.025)'
+          ctx.fillStyle = 'rgba(255,255,255,0.04)'
           ctx.fillRect(zl, 0, zw, H)
           if (z > 0) {
             ctx.strokeStyle = 'rgba(255,255,255,0.14)'
@@ -834,7 +834,7 @@
           }
         }
 
-        const dX = W * 0.015, dW = W * 0.11, dH2 = H * 0.26
+        const dX = W * 0.015, dW = W * 0.11, dH2 = H * (W < 500 ? 0.12 : 0.26)
         const dY = H / 2 - dH2
         const dPad = 6
         ctx.strokeStyle = 'rgba(120,180,255,0.4)'
@@ -964,9 +964,11 @@
           }
           if (n.digitLabel >= 0) {
             ctx.fillStyle = 'rgba(220,235,255,' + (0.65 + n.act * 0.35) + ')'
-            ctx.font = (n.act > 0.15 ? 'bold ' : '') + '11px system-ui, sans-serif'
+            ctx.font = (predAlpha > 0 && n.targetAct > 0.15 ? 'bold ' : '') + '11px system-ui, sans-serif'
             ctx.textAlign = 'left'
-            ctx.fillText(String(n.digitLabel), n.x + n.r + 6, n.y + 4)
+            const showProb = predAlpha > 0 && n.targetAct > 0.01
+            const label = showProb ? n.digitLabel + ' (' + Math.round(n.targetAct * 100) + '%)' : String(n.digitLabel)
+            ctx.fillText(label, n.x + n.r + 6, n.y + 4)
           }
           if (n.pixelIndex >= 0) {
             ctx.fillStyle = 'rgba(180,215,255,0.6)'
