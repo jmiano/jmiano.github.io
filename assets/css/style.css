@@ -269,7 +269,35 @@ section {
 }
 
 .section-bg {
-  background: #f5f8fd; /*background: #f5f8fd*/
+  background: #f5f8fd;
+}
+
+.section-hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.section-bg.section-hover {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+}
+
+section {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
+  background-color: inherit;
+}
+
+section:not(.section-bg) {
+  background-color: #fff;
+}
+
+#hero {
+  transition: none;
+  transform: none !important;
+  box-shadow: none !important;
+  z-index: 20 !important;
 }
 
 .section-title {

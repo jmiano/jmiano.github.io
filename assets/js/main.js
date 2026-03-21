@@ -70,11 +70,31 @@
       hoverActive = true
       navbarlinks.forEach(nl => nl.classList.remove('active'))
       navbarlink.classList.add('active')
+      if (section.id !== 'hero') section.classList.add('section-hover')
     })
     section.addEventListener('mouseleave', () => {
       hoverActive = false
+      section.classList.remove('section-hover')
       navbarlinksActive()
     })
+  })
+
+  const clearAllHovers = () => {
+    document.querySelectorAll('.section-hover').forEach(el => el.classList.remove('section-hover'))
+  }
+  window.addEventListener('blur', () => {
+    hoverActive = false
+    clearAllHovers()
+  })
+  window.addEventListener('focus', () => {
+    hoverActive = false
+    clearAllHovers()
+    navbarlinksActive()
+  })
+  document.addEventListener('mouseleave', () => {
+    hoverActive = false
+    clearAllHovers()
+    navbarlinksActive()
   })
 
   /**
