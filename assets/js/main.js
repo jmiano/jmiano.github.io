@@ -978,6 +978,23 @@
           }
         })
 
+        if (hoverNeuron >= 0 && hoverNeuron < neurons.length) {
+          const hn = neurons[hoverNeuron]
+          const hg = ctx.createRadialGradient(hn.x, hn.y, hn.r * 0.3, hn.x, hn.y, hn.r * 2.5)
+          hg.addColorStop(0, 'rgba(220,60,60,0.35)')
+          hg.addColorStop(1, 'rgba(220,60,60,0)')
+          ctx.fillStyle = hg
+          ctx.beginPath(); ctx.arc(hn.x, hn.y, hn.r * 2.5, 0, Math.PI * 2); ctx.fill()
+          ctx.fillStyle = 'rgba(220,60,60,0.7)'
+          ctx.beginPath(); ctx.arc(hn.x, hn.y, hn.r, 0, Math.PI * 2); ctx.fill()
+          ctx.fillStyle = 'rgba(255,255,255,0.8)'
+          ctx.font = '8px system-ui, sans-serif'
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'middle'
+          ctx.fillText('\u00d7', hn.x, hn.y)
+          ctx.textBaseline = 'alphabetic'
+        }
+
         if (predAlpha > 0 && prediction >= 0) {
           const px = W * 0.93, fs = Math.min(H * 0.3, 70)
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
@@ -1020,10 +1037,70 @@
         ctx.fillText('Weight', lgX + lgW / 2, lgY + lgH + 11)
       }
 
+      let hoverNeuron = -1
+      let mouseX = -1, mouseY = -1
+
+      const findNeuronAt = (px, py) => {
+        for (let i = 0; i < neurons.length; i++) {
+          const n = neurons[i]
+          if (n.digitLabel >= 0) continue
+          const dx = px - n.x, dy = py - n.y
+          if (dx * dx + dy * dy <= (n.r + 4) * (n.r + 4)) return i
+        }
+        return -1
+      }
+
+      const removeNeuron = (idx) => {
+        const n = neurons[idx]
+        const li = n.layer
+        layers[li] = layers[li].filter(i => i !== idx)
+        const idxMap = new Map()
+        let ni = 0
+        for (let i = 0; i < neurons.length; i++) {
+          if (i === idx) continue
+          idxMap.set(i, ni++)
+        }
+        const newCache = new Map()
+        wCache.forEach((w, key) => {
+          const parts = key.split(',').map(Number)
+          if (parts[0] === idx || parts[1] === idx) return
+          const nk = idxMap.get(parts[0]) + ',' + idxMap.get(parts[1])
+          newCache.set(nk, w)
+        })
+        wCache = newCache
+        neurons.splice(idx, 1)
+        for (let l = 0; l < NZONES; l++)
+          layers[l] = layers[l].map(i => idxMap.get(i)).filter(i => i !== undefined)
+        conns = []
+        rebuildConns()
+        if (li === 0) reassignInputPixels()
+        snapOutputY()
+        updateCounters()
+        hoverNeuron = -1
+        showStatus('Removed neuron from ' + ZLABELS[li] + '.', 2500)
+      }
+
+      canvas.addEventListener('pointermove', (e) => {
+        const r = canvas.getBoundingClientRect()
+        mouseX = e.clientX - r.left
+        mouseY = e.clientY - r.top
+        hoverNeuron = findNeuronAt(mouseX, mouseY)
+        canvas.style.cursor = hoverNeuron >= 0 ? 'pointer' : 'crosshair'
+      })
+
+      canvas.addEventListener('pointerleave', () => {
+        hoverNeuron = -1
+        mouseX = -1; mouseY = -1
+        canvas.style.cursor = 'crosshair'
+      })
+
       canvas.addEventListener('pointerdown', (e) => {
         e.preventDefault()
         const r = canvas.getBoundingClientRect()
-        addNeuron(e.clientX - r.left, e.clientY - r.top)
+        const px = e.clientX - r.left, py = e.clientY - r.top
+        const hit = findNeuronAt(px, py)
+        if (hit >= 0) removeNeuron(hit)
+        else addNeuron(px, py)
       })
 
       digitBtns.forEach(btn => {
