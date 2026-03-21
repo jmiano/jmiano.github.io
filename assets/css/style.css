@@ -1247,6 +1247,8 @@ section {
   align-items: center;
   justify-content: center;
   margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
   width: fit-content;
   cursor: pointer;
   padding: 0;
@@ -1304,8 +1306,8 @@ section {
   position: absolute;
   top: 55%;
   left: 50%;
-  width: 1.55rem;
-  height: 1.15rem;
+  width: 1.8rem;
+  height: 1.3rem;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(0, 102, 255, 0.08);
@@ -1319,15 +1321,73 @@ section {
     opacity 0.14s ease 0.12s,
     transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s,
     box-shadow 0.42s ease 0.08s;
+  overflow: hidden;
+}
+.easter-egg-core-preview,
+.neural-garden-morph-content {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.neural-garden-morph-content {
+  pointer-events: none;
+}
+.neural-garden-preview-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.neural-garden-preview-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  transform-origin: top left;
+  will-change: transform;
+}
+.neural-garden-preview-root,
+.neural-garden-preview-root * {
+  pointer-events: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+.neural-garden-preview-root .neural-garden-content {
+  height: 100%;
+}
+.neural-garden-preview-root .neural-garden-hints {
+  display: none !important;
+}
+.neural-garden-preview-root canvas {
+  display: none !important;
+}
+.neural-garden-preview-root .neural-garden-preview-stage-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.neural-garden-preview-root .neural-garden-preview-stage-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #0a1628;
 }
 .easter-egg-trigger:hover .easter-egg-icon {
   filter:
-    drop-shadow(0 0 10px rgba(255, 255, 255, 0.45))
-    drop-shadow(0 0 18px rgba(0, 102, 255, 0.25));
+    brightness(1.04)
+    saturate(1.08)
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.55))
+    drop-shadow(0 0 14px rgba(255, 255, 255, 0.3));
 }
 .easter-egg-trigger.is-cracking .easter-egg-motion,
 .easter-egg-trigger.is-cracking .easter-egg-shell {
   animation: none;
+}
+.easter-egg-trigger.is-cracking .easter-egg-icon {
+  filter: none !important;
 }
 .easter-egg-trigger.is-cracking .easter-egg-icon-whole {
   opacity: 0;
@@ -1448,21 +1508,11 @@ section {
   border-color: rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.12);
 }
-.neural-garden-morph-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 0.6rem;
-  padding: 0.7rem 1.4rem;
-  white-space: nowrap;
-  transition: opacity 0.16s ease, transform 0.24s ease, filter 0.24s ease;
-}
-.neural-garden-morph-card.is-expanded .neural-garden-morph-content {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.98);
-  filter: blur(1px);
+.neural-garden-morph-card.is-expanded.is-seed {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 102, 255, 0.08);
+  box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
 }
 .neural-garden-close {
   position: absolute;
