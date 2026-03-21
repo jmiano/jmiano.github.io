@@ -1345,6 +1345,7 @@ section {
   box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
 }
 .neural-garden-hints-toggle {
+  min-width: 5.5rem;
 }
 .neural-garden-hints {
   position: absolute;
@@ -1448,8 +1449,29 @@ section {
     align-items: flex-start;
   }
 
+  .neural-garden-controls {
+    align-self: flex-start;
+  }
+
   .neural-garden-stage {
     height: 340px;
+  }
+
+  .neural-garden-hints {
+    right: auto;
+    left: 0;
+    transform-origin: top left;
+    width: min(420px, calc(100vw - 4rem));
+  }
+
+  .neural-garden-digits {
+    gap: 0.35rem;
+  }
+
+  .neural-garden-digit {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
   }
 }
 @media (max-width: 575px) {
@@ -1459,6 +1481,20 @@ section {
 
   .neural-garden-stage {
     height: 280px;
+  }
+
+  .neural-garden-hints {
+    width: calc(100vw - 3.5rem);
+  }
+
+  .neural-garden-digit {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .neural-garden-digits {
+    gap: 0.25rem;
   }
 }
 .contact .info .email:hover i, .contact .info .address:hover i, .contact .info .phone:hover i {

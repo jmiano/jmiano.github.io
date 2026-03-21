@@ -405,7 +405,7 @@
       const ZX = []
       for (let z = 0; z < NZONES; z++) ZX.push(NET_L + (z + 0.5) * ZW)
 
-      const LDELAY = 420
+      const LDELAY = 350
       const sigmoid = x => 1 / (1 + Math.exp(-Math.max(-12, Math.min(12, x))))
 
       let neurons = []
@@ -483,18 +483,24 @@
         snapOutputY()
       }
 
-      const syncStats = () => {
+      let statusTimer = null
+      const showStatus = (msg, duration) => {
+        if (statusTimer) clearTimeout(statusTimer)
+        statusEl.style.transition = 'none'
+        statusEl.style.opacity = '1'
+        statusEl.textContent = msg
+        if (duration) {
+          statusTimer = setTimeout(() => {
+            statusEl.style.transition = 'opacity 0.8s ease'
+            statusEl.style.opacity = '0'
+            statusTimer = null
+          }, duration)
+        }
+      }
+
+      const updateCounters = () => {
         neuronCountEl.textContent = neurons.length
         connCountEl.textContent = conns.length
-        const nIn = layers[0].length
-        if (nIn === 0)
-          statusEl.textContent = 'Click in the Input column to add pixel features (need ' + NPIX + ' for full coverage).'
-        else if (nIn < NPIX)
-          statusEl.textContent = nIn + '/' + NPIX + ' input pixels mapped. Add more or add hidden neurons and train.'
-        else if (conns.length === 0)
-          statusEl.textContent = 'All ' + NPIX + ' inputs placed! Add hidden neurons to connect layers, then train.'
-        else if (currentDigit < 0)
-          statusEl.textContent = neurons.length + ' neurons, ' + conns.length + ' connections. Train the network, then pick a digit.'
       }
 
       const whichZone = (px) => {
@@ -515,18 +521,7 @@
         const zone = whichZone(px)
         if (zone < 0) return -1
         if (zone === 0 && layers[0].length >= NPIX) {
-          statusEl.textContent = 'All ' + NPIX + ' input pixels are already mapped. Cannot add more input neurons.'
-          statusEl.style.transition = 'none'
-          statusEl.style.opacity = '1'
-          setTimeout(() => {
-            statusEl.style.transition = 'opacity 0.6s ease'
-            statusEl.style.opacity = '0'
-            setTimeout(() => {
-              syncStats()
-              statusEl.style.transition = 'opacity 0.4s ease'
-              statusEl.style.opacity = '1'
-            }, 600)
-          }, 1500)
+          showStatus('All ' + NPIX + ' input pixels are already mapped. Cannot add more input neurons.', 2500)
           return -1
         }
         const idx = neurons.length
@@ -542,7 +537,11 @@
         layers[zone].push(idx)
         if (zone === 0) reassignInputPixels()
         rebuildConns()
-        syncStats()
+        updateCounters()
+        if (zone === 0)
+          showStatus('Added input neuron P' + (layers[0].length - 1) + '. ' + layers[0].length + '/' + NPIX + ' pixels mapped.', 2500)
+        else
+          showStatus('Added hidden neuron to ' + ZLABELS[zone] + '.', 2500)
         return idx
       }
 
@@ -595,23 +594,23 @@
         inputAlpha = 1; predAlpha = 0; pixPulse = -1; pulseTime = -1
         neurons.forEach(n => { n.act = 0 })
         conns.forEach(c => { c.pulse = -1 })
-        statusEl.textContent = 'Digit ' + digit + ' selected. Press Predict to run the forward pass.'
+        showStatus('Digit ' + digit + ' selected. Press Predict to run the forward pass.', 3000)
       }
 
       const runPredict = () => {
         if (currentDigit < 0) {
-          statusEl.textContent = 'Select a digit first!'
+          showStatus('Select a digit first!', 2500)
           return
         }
         if (layers[0].length === 0) {
-          statusEl.textContent = 'Add at least one input neuron first!'
+          showStatus('Add at least one input neuron first!', 2500)
           return
         }
         neurons.forEach(n => { n.act = 0 })
         conns.forEach(c => { c.pulse = -1 })
         forwardPass(digitPixels)
         predAlpha = 0; pixPulse = 0; pulseTime = 0
-        statusEl.textContent = 'Forward pass: digit ' + currentDigit + '\u2026'
+        showStatus('Forward pass: digit ' + currentDigit + '\u2026', 2500)
       }
 
       let isTraining = false
@@ -690,8 +689,8 @@
         const filled = []
         for (let li = 0; li < NZONES; li++)
           if (layers[li].length > 0) filled.push(li)
-        if (!filled.includes(0)) { statusEl.textContent = 'Add input neurons first!'; return }
-        if (conns.length === 0) { statusEl.textContent = 'No connections. Add hidden neurons to bridge layers.'; return }
+        if (!filled.includes(0)) { showStatus('Add input neurons first!', 2500); return }
+        if (conns.length === 0) { showStatus('No connections. Add hidden neurons to bridge layers.', 2500); return }
 
         isTraining = true
         predAlpha = 0; pulseTime = -1; pixPulse = -1
@@ -701,8 +700,8 @@
           for (let a = 0; a < 8; a++)
             trainData.push({ pix: DIGITS[d].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06), label: d })
 
-        const lr = 0.5, totalEpochs = 100, epochsPerFrame = 1
-        let epoch = 0, lastAcc = 0
+        const lr = 0.5, totalEpochs = 20, epochsPerFrame = 1
+        let epoch = 0
 
         const shuffle = (arr) => {
           for (let i = arr.length - 1; i > 0; i--) {
@@ -740,10 +739,8 @@
             c.backPulse = Math.abs((neurons[c.from].fwdAct || 0) * (neurons[c.to].delta || 0)) / maxGrad
           })
 
-          if (epoch % 30 < epochsPerFrame) lastAcc = computeAccuracy(filled)
-
           const pct = Math.round(epoch / totalEpochs * 100)
-          statusEl.textContent = 'Training ' + pct + '%  |  Epoch ' + epoch + '/' + totalEpochs + '  |  Accuracy: ' + lastAcc + '/10'
+          showStatus('Training ' + pct + '%  |  Epoch ' + epoch + '/' + totalEpochs)
 
           if (epoch < totalEpochs) {
             requestAnimationFrame(trainFrame)
@@ -753,7 +750,7 @@
             neurons.forEach(n => { n.act = 0 })
             predAlpha = 0; prediction = -1
             const acc = computeAccuracy(filled)
-            statusEl.textContent = 'Trained! Accuracy: ' + acc + '/10. Pick a digit to test.'
+            showStatus('Trained! Accuracy: ' + acc + '/10. Pick a digit to test.', 4500)
           }
         }
 
@@ -765,7 +762,8 @@
         currentDigit = -1; digitPixels = null; prediction = -1
         inputAlpha = 0; predAlpha = 0; pixPulse = -1; pulseTime = -1
         digitBtns.forEach(btn => btn.classList.remove('active'))
-        initOutput(); snapOutputY(); rebuildConns(); syncStats()
+        initOutput(); snapOutputY(); rebuildConns(); updateCounters()
+        showStatus('Network reset.', 2500)
       }
 
       const update = (dt) => {
@@ -783,13 +781,13 @@
           if (layers[li].length > 0) filled.push(li)
         const lDelay = filled.length > 1 ? LDELAY : 300
 
-        inputAlpha = Math.min(pulseTime / 300, 1)
+        inputAlpha = Math.min(pulseTime / 350, 1)
 
         if (pixPulse >= 0 && pixPulse < 1)
-          pixPulse = Math.min(pulseTime / 280, 1)
+          pixPulse = Math.min(pulseTime / 350, 1)
 
         filled.forEach((li, order) => {
-          const t0 = 300 + order * lDelay
+          const t0 = 350 + order * lDelay
           if (pulseTime >= t0) {
             const p = Math.min((pulseTime - t0) / 250, 1)
             for (const idx of layers[li])
@@ -800,16 +798,16 @@
         for (const c of conns) {
           const fromOrder = filled.indexOf(neurons[c.from].layer)
           if (fromOrder < 0) continue
-          const t0 = 300 + fromOrder * lDelay + 100
+          const t0 = 350 + fromOrder * lDelay + 100
           const dur = lDelay * 0.6
           if (pulseTime >= t0 && c.pulse < 1)
             c.pulse = Math.min((pulseTime - t0) / dur, 1)
         }
 
-        const predT = 300 + (filled.length - 1) * lDelay + 250
-        predAlpha = pulseTime > predT ? Math.min((pulseTime - predT) / 350, 1) : 0
-        if (pulseTime > predT + 800 && prediction >= 0)
-          statusEl.textContent = 'Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence)'
+        const predT = 350 + (filled.length - 1) * lDelay + 100
+        predAlpha = pulseTime > predT ? 1 : 0
+        if (predAlpha > 0 && prediction >= 0 && pulseTime - dt <= predT)
+          showStatus('Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence)', 3500)
       }
 
       const render = () => {
@@ -990,7 +988,9 @@
           ctx.fillText(Math.round(confidence * 100) + '% Confidence', px, H * 0.45 + fs * 0.5 + 14)
         }
 
-        const lgW = 80, lgH = 8, lgX = W - lgW - 12, lgY = H - 28
+        const lgW = 80, lgH = 8
+        const lgX = W < 500 ? 12 : W - lgW - 12
+        const lgY = H - 28
         const lgGrad = ctx.createLinearGradient(lgX, 0, lgX + lgW, 0)
         lgGrad.addColorStop(0, 'rgba(160,80,255,0.7)')
         lgGrad.addColorStop(0.5, 'rgba(120,125,255,0.25)')
@@ -1068,7 +1068,7 @@
 
       initOutput()
       resizeCanvas()
-      syncStats()
+      updateCounters()
       lastTime = performance.now()
       requestAnimationFrame(animate)
     }
