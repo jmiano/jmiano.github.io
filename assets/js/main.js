@@ -107,7 +107,7 @@
 
     section.addEventListener('click', (e) => {
       if (e.defaultPrevented) return
-      if (e.target.closest('a, button, input, textarea, select, option, label, summary, [role="button"], [contenteditable="true"]')) return
+      if (e.target.closest('a, button, input, textarea, select, option, label, summary, [role="button"], [contenteditable="true"], [data-no-section-scroll]')) return
       if (window.getSelection && window.getSelection().toString()) return
 
       let hash = `#${section.id}`
@@ -367,6 +367,619 @@
       }
     }
   });
+
+  /**
+   * Neural Garden - Build Your Own Digit Classifier
+   */
+  const neuralGarden = select('.neural-garden')
+  if (neuralGarden) {
+    const canvas = select('#neural-garden-canvas')
+    const ctx = canvas ? canvas.getContext('2d') : null
+    const neuronCountEl = select('#neural-garden-neurons')
+    const connCountEl = select('#neural-garden-connections')
+    const statusEl = select('#neural-garden-status')
+    const ctrlBtns = select('[data-neural-action]', true)
+    const digitBtns = select('.neural-garden-digit', true)
+
+    if (canvas && ctx) {
+      let W = 0, H = 0
+
+      const DW = 3, DH = 5, NPIX = 15
+      const DIGITS = [
+        [1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+        [0,1,0, 1,1,0, 0,1,0, 0,1,0, 1,1,1],
+        [1,1,1, 0,0,1, 1,1,1, 1,0,0, 1,1,1],
+        [1,1,1, 0,0,1, 1,1,1, 0,0,1, 1,1,1],
+        [1,0,1, 1,0,1, 1,1,1, 0,0,1, 0,0,1],
+        [1,1,1, 1,0,0, 1,1,1, 0,0,1, 1,1,1],
+        [1,1,1, 1,0,0, 1,1,1, 1,0,1, 1,1,1],
+        [1,1,1, 0,0,1, 0,0,1, 0,1,0, 0,1,0],
+        [1,1,1, 1,0,1, 1,1,1, 1,0,1, 1,1,1],
+        [1,1,1, 1,0,1, 1,1,1, 0,0,1, 1,1,1]
+      ]
+
+      const NZONES = 4
+      const ZLABELS = ['Input', 'Hidden 1', 'Hidden 2', 'Output']
+      const NET_L = 0.14, NET_R = 0.86
+      const ZW = (NET_R - NET_L) / NZONES
+      const ZX = []
+      for (let z = 0; z < NZONES; z++) ZX.push(NET_L + (z + 0.5) * ZW)
+
+      const LDELAY = 420
+      const sigmoid = x => 1 / (1 + Math.exp(-Math.max(-12, Math.min(12, x))))
+
+      let neurons = []
+      let layers = [[], [], [], []]
+      let conns = []
+      let wCache = new Map()
+      let currentDigit = -1
+      let digitPixels = null
+      let inputAlpha = 0
+      let predAlpha = 0
+      let prediction = -1
+      let confidence = 0
+      let pulseTime = -1
+      let pixPulse = -1
+      let lastTime = 0
+
+      const cachedWeight = (a, b) => {
+        const k = a + ',' + b
+        if (!wCache.has(k)) wCache.set(k, Math.random() * 2 - 1)
+        return wCache.get(k)
+      }
+
+      const rebuildConns = () => {
+        conns = []
+        const filled = []
+        for (let li = 0; li < NZONES; li++)
+          if (layers[li].length > 0) filled.push(li)
+        for (let k = 0; k < filled.length - 1; k++) {
+          const fl = filled[k], tl = filled[k + 1]
+          for (const fi of layers[fl])
+            for (const ti of layers[tl])
+              conns.push({ from: fi, to: ti, weight: cachedWeight(fi, ti), pulse: -1 })
+        }
+      }
+
+      const snapOutputY = () => {
+        const n = layers[3].length
+        for (let i = 0; i < n; i++) {
+          neurons[layers[3][i]].x = ZX[3] * W
+          neurons[layers[3][i]].y = H * (i + 1) / (n + 1)
+        }
+      }
+
+      const initOutput = () => {
+        for (let i = 0; i < 10; i++) {
+          const idx = neurons.length
+          neurons.push({
+            x: 0, y: 0, r: 5, act: 0, targetAct: 0,
+            bias: (Math.random() - 0.5) * 0.4,
+            layer: 3, digitLabel: i,
+            pixelIndex: -1,
+            phase: Math.random() * Math.PI * 2,
+            birthFlash: 0
+          })
+          layers[3].push(idx)
+        }
+      }
+
+      const resizeCanvas = () => {
+        const r = canvas.getBoundingClientRect()
+        if (!r.width || !r.height) return
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        const pW = W, pH = H
+        W = r.width; H = r.height
+        canvas.width = Math.round(W * dpr)
+        canvas.height = Math.round(H * dpr)
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+        if (pW && pH && neurons.length) {
+          const sx = W / pW, sy = H / pH
+          neurons.forEach(n => { n.x *= sx; n.y *= sy })
+        }
+        for (let li = 0; li < NZONES; li++)
+          for (const idx of layers[li])
+            neurons[idx].x = ZX[li] * W
+        snapOutputY()
+      }
+
+      const syncStats = () => {
+        neuronCountEl.textContent = neurons.length
+        connCountEl.textContent = conns.length
+        const nIn = layers[0].length
+        if (nIn === 0)
+          statusEl.textContent = 'Click in the Input column to add pixel features (need ' + NPIX + ' for full coverage).'
+        else if (nIn < NPIX)
+          statusEl.textContent = nIn + '/' + NPIX + ' input features placed. Add more or add hidden neurons and train.'
+        else if (conns.length === 0)
+          statusEl.textContent = 'All ' + NPIX + ' inputs placed! Add hidden neurons to connect layers, then train.'
+        else if (currentDigit < 0)
+          statusEl.textContent = neurons.length + ' neurons, ' + conns.length + ' connections. Train the network, then pick a digit.'
+      }
+
+      const whichZone = (px) => {
+        const f = px / W
+        for (let z = 0; z < NZONES - 1; z++) {
+          const left = NET_L + z * ZW, right = left + ZW
+          if (f >= left && f <= right) return z
+        }
+        return -1
+      }
+
+      const reassignInputPixels = () => {
+        const sorted = layers[0].slice().sort((a, b) => neurons[a].y - neurons[b].y)
+        sorted.forEach((idx, i) => { neurons[idx].pixelIndex = i })
+      }
+
+      const addNeuron = (px, py) => {
+        const zone = whichZone(px)
+        if (zone < 0) return -1
+        if (zone === 0 && layers[0].length >= NPIX) return -1
+        const idx = neurons.length
+        neurons.push({
+          x: ZX[zone] * W, y: py,
+          r: 5, act: 0, targetAct: 0,
+          bias: (Math.random() - 0.5) * 0.4,
+          layer: zone, digitLabel: -1,
+          pixelIndex: -1,
+          phase: Math.random() * Math.PI * 2,
+          birthFlash: 1
+        })
+        layers[zone].push(idx)
+        if (zone === 0) reassignInputPixels()
+        rebuildConns()
+        syncStats()
+        return idx
+      }
+
+      const forwardPass = (pix) => {
+        for (const idx of layers[0]) {
+          const n = neurons[idx]
+          n.targetAct = n.pixelIndex >= 0 ? (pix[n.pixelIndex] || 0) : 0
+        }
+
+        const filled = []
+        for (let li = 0; li < NZONES; li++)
+          if (layers[li].length > 0) filled.push(li)
+
+        for (let k = 1; k < filled.length; k++) {
+          const li = filled[k], prevLi = filled[k - 1]
+          for (const idx of layers[li]) {
+            const n = neurons[idx]
+            let s = n.bias
+            for (const c of conns)
+              if (c.to === idx && neurons[c.from].layer === prevLi)
+                s += neurons[c.from].targetAct * c.weight
+            if (li === 3) n.rawLogit = s
+            else n.targetAct = sigmoid(s)
+          }
+        }
+
+        prediction = -1; confidence = 0
+        if (layers[3].length > 0 && filled.length > 1) {
+          const logits = layers[3].map(i => neurons[i].rawLogit || 0)
+          const mx = Math.max(...logits)
+          const exps = logits.map(l => Math.exp(l - mx))
+          const total = exps.reduce((a, b) => a + b, 0)
+          let bestI = 0
+          layers[3].forEach((idx, i) => {
+            neurons[idx].targetAct = exps[i] / total
+            if (neurons[idx].targetAct > neurons[layers[3][bestI]].targetAct) bestI = i
+          })
+          prediction = neurons[layers[3][bestI]].digitLabel
+          confidence = neurons[layers[3][bestI]].targetAct
+        } else if (layers[3].length > 0) {
+          layers[3].forEach(idx => { neurons[idx].targetAct = sigmoid(neurons[idx].bias) })
+        }
+      }
+
+      const selectDigit = (digit) => {
+        currentDigit = digit
+        digitPixels = DIGITS[digit].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06)
+        digitBtns.forEach(btn =>
+          btn.classList.toggle('active', parseInt(btn.getAttribute('data-digit')) === digit))
+        inputAlpha = 1; predAlpha = 0; pixPulse = -1; pulseTime = -1
+        neurons.forEach(n => { n.act = 0 })
+        conns.forEach(c => { c.pulse = -1 })
+        statusEl.textContent = 'Digit ' + digit + ' selected. Press Predict to run the forward pass.'
+      }
+
+      const runPredict = () => {
+        if (currentDigit < 0) {
+          statusEl.textContent = 'Select a digit first!'
+          return
+        }
+        if (layers[0].length === 0) {
+          statusEl.textContent = 'Add at least one input neuron first!'
+          return
+        }
+        neurons.forEach(n => { n.act = 0 })
+        conns.forEach(c => { c.pulse = -1 })
+        forwardPass(digitPixels)
+        predAlpha = 0; pixPulse = 0; pulseTime = 0
+        statusEl.textContent = 'Forward pass: digit ' + currentDigit + '\u2026'
+      }
+
+      const trainNetwork = () => {
+        const filled = []
+        for (let li = 0; li < NZONES; li++)
+          if (layers[li].length > 0) filled.push(li)
+        if (!filled.includes(0)) {
+          statusEl.textContent = 'Add input neurons first!'; return
+        }
+        if (conns.length === 0) {
+          statusEl.textContent = 'No connections \u2014 add hidden neurons to bridge layers.'; return
+        }
+
+        const lr = 0.5, epochs = 1000
+        for (let ep = 0; ep < epochs; ep++) {
+          for (let d = 0; d < 10; d++) {
+            const pix = DIGITS[d]
+
+            for (const idx of layers[0])
+              neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (pix[neurons[idx].pixelIndex] || 0) : 0
+
+            for (let k = 1; k < filled.length; k++) {
+              const li = filled[k], pl = filled[k - 1]
+              for (const idx of layers[li]) {
+                let s = neurons[idx].bias
+                for (const c of conns)
+                  if (c.to === idx && neurons[c.from].layer === pl)
+                    s += neurons[c.from].fwdAct * c.weight
+                if (li === 3) neurons[idx].rawLogit = s
+                else neurons[idx].fwdAct = sigmoid(s)
+              }
+            }
+
+            const logits = layers[3].map(i => neurons[i].rawLogit || 0)
+            const mx = Math.max(...logits)
+            const exps = logits.map(l => Math.exp(l - mx))
+            const tot = exps.reduce((a, b) => a + b, 0)
+            layers[3].forEach((idx, i) => { neurons[idx].fwdAct = exps[i] / tot })
+
+            layers[3].forEach(idx => {
+              neurons[idx].delta = neurons[idx].fwdAct - (neurons[idx].digitLabel === d ? 1 : 0)
+            })
+
+            for (let k = filled.length - 2; k >= 1; k--) {
+              const li = filled[k], nl = filled[k + 1]
+              for (const idx of layers[li]) {
+                let gs = 0
+                for (const c of conns)
+                  if (c.from === idx && neurons[c.to].layer === nl)
+                    gs += c.weight * neurons[c.to].delta
+                neurons[idx].delta = gs * neurons[idx].fwdAct * (1 - neurons[idx].fwdAct)
+              }
+            }
+
+            for (const c of conns) {
+              c.weight -= lr * neurons[c.from].fwdAct * neurons[c.to].delta
+              wCache.set(c.from + ',' + c.to, c.weight)
+            }
+            for (let k = 1; k < filled.length; k++)
+              for (const idx of layers[filled[k]])
+                neurons[idx].bias -= lr * neurons[idx].delta
+          }
+        }
+
+        let correct = 0
+        for (let d = 0; d < 10; d++) {
+          for (const idx of layers[0])
+            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
+          for (let k = 1; k < filled.length; k++) {
+            const li = filled[k], pl = filled[k - 1]
+            for (const idx of layers[li]) {
+              let s = neurons[idx].bias
+              for (const c of conns)
+                if (c.to === idx && neurons[c.from].layer === pl)
+                  s += neurons[c.from].fwdAct * c.weight
+              neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
+            }
+          }
+          let bestI = 0
+          for (let i = 1; i < layers[3].length; i++)
+            if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
+          if (neurons[layers[3][bestI]].digitLabel === d) correct++
+        }
+
+        statusEl.textContent = 'Trained! Accuracy: ' + correct + '/10. Pick a digit to test.'
+        if (currentDigit >= 0) runPredict()
+      }
+
+      const clearAll = () => {
+        neurons = []; layers = [[], [], [], []]; conns = []; wCache = new Map()
+        currentDigit = -1; digitPixels = null; prediction = -1
+        inputAlpha = 0; predAlpha = 0; pixPulse = -1; pulseTime = -1
+        digitBtns.forEach(btn => btn.classList.remove('active'))
+        initOutput(); snapOutputY(); rebuildConns(); syncStats()
+      }
+
+      const update = (dt) => {
+        neurons.forEach(n => {
+          n.phase += dt * 0.002
+          if (n.birthFlash > 0.01) n.birthFlash *= 0.93; else n.birthFlash = 0
+          if (pulseTime < 0) n.act *= 0.985
+        })
+        if (pulseTime < 0) return
+        pulseTime += dt
+
+        const filled = []
+        for (let li = 0; li < NZONES; li++)
+          if (layers[li].length > 0) filled.push(li)
+        const lDelay = filled.length > 1 ? LDELAY : 300
+
+        inputAlpha = Math.min(pulseTime / 300, 1)
+
+        if (pixPulse >= 0 && pixPulse < 1)
+          pixPulse = Math.min(pulseTime / 280, 1)
+
+        filled.forEach((li, order) => {
+          const t0 = 300 + order * lDelay
+          if (pulseTime >= t0) {
+            const p = Math.min((pulseTime - t0) / 250, 1)
+            for (const idx of layers[li])
+              neurons[idx].act = neurons[idx].targetAct * p
+          }
+        })
+
+        for (const c of conns) {
+          const fromOrder = filled.indexOf(neurons[c.from].layer)
+          if (fromOrder < 0) continue
+          const t0 = 300 + fromOrder * lDelay + 100
+          const dur = lDelay * 0.6
+          if (pulseTime >= t0 && c.pulse < 1)
+            c.pulse = Math.min((pulseTime - t0) / dur, 1)
+        }
+
+        const predT = 300 + (filled.length - 1) * lDelay + 250
+        predAlpha = pulseTime > predT ? Math.min((pulseTime - predT) / 350, 1) : 0
+        if (pulseTime > predT + 800 && prediction >= 0)
+          statusEl.textContent = 'Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence)'
+      }
+
+      const render = () => {
+        ctx.clearRect(0, 0, W, H)
+
+        for (let z = 0; z < NZONES; z++) {
+          const zl = (NET_L + z * ZW) * W, zw = ZW * W
+          ctx.fillStyle = z % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.025)'
+          ctx.fillRect(zl, 0, zw, H)
+          if (z > 0) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.14)'
+            ctx.lineWidth = 1; ctx.setLineDash([4, 4])
+            ctx.beginPath(); ctx.moveTo(zl, 0); ctx.lineTo(zl, H); ctx.stroke()
+            ctx.setLineDash([])
+          }
+          ctx.fillStyle = z === 3 ? 'rgba(180,215,255,0.85)' : 'rgba(180,215,255,0.7)'
+          ctx.font = '10px system-ui, sans-serif'
+          ctx.textAlign = 'center'
+          ctx.fillText(ZLABELS[z], ZX[z] * W, 14)
+          if (z < 3 && layers[z].length === 0) {
+            ctx.fillStyle = 'rgba(180,215,255,0.3)'
+            ctx.font = '9px system-ui, sans-serif'
+            ctx.fillText('click to add', ZX[z] * W, H / 2)
+          }
+        }
+
+        const dX = W * 0.015, dW = W * 0.11, dH2 = H * 0.26
+        const dY = H / 2 - dH2
+        const dPad = 6
+        ctx.strokeStyle = 'rgba(120,180,255,0.4)'
+        ctx.lineWidth = 1; ctx.setLineDash([3, 3])
+        ctx.strokeRect(dX, dY, dW, dH2 * 2)
+        ctx.setLineDash([])
+        ctx.fillStyle = 'rgba(180,215,255,0.7)'
+        ctx.font = '9px system-ui, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.fillText('Digit', dX + dW / 2, dY - 6)
+
+        const innerW = dW - dPad * 2, innerH = dH2 * 2 - dPad * 2
+        const cell = Math.min(innerH / DH, innerW / DW)
+        const gw = cell * DW, gh = cell * DH
+        const ox = dX + dPad + (innerW - gw) / 2, oy = dY + dPad + (innerH - gh) / 2
+        const pixCenters = []
+        for (let row = 0; row < DH; row++)
+          for (let col = 0; col < DW; col++)
+            pixCenters.push({ x: ox + col * cell + cell / 2, y: oy + row * cell + cell / 2 })
+
+        if (digitPixels && inputAlpha > 0) {
+          for (let row = 0; row < DH; row++)
+            for (let col = 0; col < DW; col++) {
+              const pi = row * DW + col
+              const val = digitPixels[pi] * inputAlpha
+              if (val < 0.03) continue
+              const s = cell * 0.76, cx = ox + col * cell + (cell - s) / 2, cy = oy + row * cell + (cell - s) / 2
+              const rr = s * 0.2
+              ctx.fillStyle = 'rgba(120,190,255,' + (val * 0.95) + ')'
+              ctx.beginPath()
+              ctx.moveTo(cx + rr, cy); ctx.lineTo(cx + s - rr, cy)
+              ctx.quadraticCurveTo(cx + s, cy, cx + s, cy + rr)
+              ctx.lineTo(cx + s, cy + s - rr)
+              ctx.quadraticCurveTo(cx + s, cy + s, cx + s - rr, cy + s)
+              ctx.lineTo(cx + rr, cy + s)
+              ctx.quadraticCurveTo(cx, cy + s, cx, cy + s - rr)
+              ctx.lineTo(cx, cy + rr)
+              ctx.quadraticCurveTo(cx, cy, cx + rr, cy)
+              ctx.closePath(); ctx.fill()
+            }
+        } else {
+          ctx.fillStyle = 'rgba(180,215,255,0.35)'
+          ctx.font = '9px system-ui, sans-serif'
+          ctx.textAlign = 'center'
+          ctx.fillText('Pick a', dX + dW / 2, H / 2 - 4)
+          ctx.fillText('digit', dX + dW / 2, H / 2 + 10)
+        }
+
+        if (digitPixels && layers[0].length > 0) {
+          for (const idx of layers[0]) {
+            const n = neurons[idx]
+            if (n.pixelIndex < 0 || n.pixelIndex >= NPIX) continue
+            const pc = pixCenters[n.pixelIndex]
+            const val = digitPixels[n.pixelIndex] || 0
+            ctx.strokeStyle = 'rgba(120,190,255,' + (0.08 + val * 0.35) + ')'
+            ctx.lineWidth = 0.5 + val * 0.8
+            ctx.beginPath(); ctx.moveTo(pc.x, pc.y); ctx.lineTo(n.x, n.y); ctx.stroke()
+
+            if (pixPulse > 0 && pixPulse < 1 && val > 0.05) {
+              const px = pc.x + (n.x - pc.x) * pixPulse
+              const py = pc.y + (n.y - pc.y) * pixPulse
+              const g = ctx.createRadialGradient(px, py, 0, px, py, 10)
+              g.addColorStop(0, 'rgba(130,200,255,' + (val * 0.5) + ')')
+              g.addColorStop(1, 'rgba(80,160,255,0)')
+              ctx.fillStyle = g
+              ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2); ctx.fill()
+              ctx.fillStyle = 'rgba(230,245,255,0.9)'
+              ctx.beginPath(); ctx.arc(px, py, 1.5, 0, Math.PI * 2); ctx.fill()
+            }
+          }
+        }
+
+        for (const c of conns) {
+          const a = neurons[c.from], b = neurons[c.to]
+          const hot = c.pulse > 0 && c.pulse < 1
+          const wA = Math.abs(c.weight), t = (c.weight + 1) / 2
+          const cR = Math.round(160 * (1 - t) + 80 * t)
+          const cG = Math.round(80 * (1 - t) + 170 * t)
+          const cB = Math.round(255 * (1 - t) + 255 * t)
+          ctx.strokeStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + (0.15 + wA * 0.2) + ')'
+          ctx.lineWidth = 0.5 + wA * 0.6
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke()
+
+          if (hot) {
+            ctx.strokeStyle = 'rgba(100,170,255,0.35)'
+            ctx.lineWidth = 2
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke()
+            const px = a.x + (b.x - a.x) * c.pulse, py = a.y + (b.y - a.y) * c.pulse
+            const g = ctx.createRadialGradient(px, py, 0, px, py, 10)
+            g.addColorStop(0, 'rgba(150,210,255,0.55)')
+            g.addColorStop(1, 'rgba(80,160,255,0)')
+            ctx.fillStyle = g
+            ctx.beginPath(); ctx.arc(px, py, 12, 0, Math.PI * 2); ctx.fill()
+            ctx.fillStyle = 'rgba(230,245,255,0.95)'
+            ctx.beginPath(); ctx.arc(px, py, 1.8, 0, Math.PI * 2); ctx.fill()
+          }
+        }
+
+        neurons.forEach(n => {
+          const br = 1 + Math.sin(n.phase) * 0.04
+          const r = n.r * br
+          const glow = Math.max(n.act, n.birthFlash * 0.5, 0.1)
+          const g = ctx.createRadialGradient(n.x, n.y, r * 0.3, n.x, n.y, r * 2.5)
+          g.addColorStop(0, 'rgba(90,170,255,' + (glow * 0.45) + ')')
+          g.addColorStop(0.6, 'rgba(60,130,255,' + (glow * 0.1) + ')')
+          g.addColorStop(1, 'rgba(60,130,255,0)')
+          ctx.fillStyle = g
+          ctx.beginPath(); ctx.arc(n.x, n.y, r * 2.5, 0, Math.PI * 2); ctx.fill()
+          ctx.fillStyle = 'rgba(185,220,255,' + (0.5 + glow * 0.5) + ')'
+          ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2); ctx.fill()
+          ctx.fillStyle = 'rgba(235,245,255,' + (0.35 + glow * 0.55) + ')'
+          ctx.beginPath(); ctx.arc(n.x, n.y, r * 0.4, 0, Math.PI * 2); ctx.fill()
+          if (glow > 0.3) {
+            const rr = r + 3 + (1 - glow) * 8
+            ctx.strokeStyle = 'rgba(110,185,255,' + (glow * 0.5) + ')'
+            ctx.lineWidth = 1
+            ctx.beginPath(); ctx.arc(n.x, n.y, rr, 0, Math.PI * 2); ctx.stroke()
+          }
+          if (n.digitLabel >= 0) {
+            ctx.fillStyle = 'rgba(220,235,255,' + (0.65 + n.act * 0.35) + ')'
+            ctx.font = (n.act > 0.15 ? 'bold ' : '') + '11px system-ui, sans-serif'
+            ctx.textAlign = 'left'
+            ctx.fillText(String(n.digitLabel), n.x + n.r + 6, n.y + 4)
+          }
+          if (n.pixelIndex >= 0) {
+            ctx.fillStyle = 'rgba(180,215,255,0.6)'
+            ctx.font = '8px system-ui, sans-serif'
+            ctx.textAlign = 'right'
+            ctx.fillText('P' + n.pixelIndex, n.x - n.r - 4, n.y + 3)
+          }
+        })
+
+        if (predAlpha > 0 && prediction >= 0) {
+          const px = W * 0.93, fs = Math.min(H * 0.3, 70)
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+          ctx.fillStyle = 'rgba(200,230,255,' + predAlpha + ')'
+          ctx.font = 'bold ' + fs + 'px system-ui, sans-serif'
+          ctx.fillText(String(prediction), px, H * 0.45)
+          ctx.textBaseline = 'alphabetic'
+          ctx.fillStyle = 'rgba(180,215,255,' + (predAlpha * 0.7) + ')'
+          ctx.font = '9px system-ui, sans-serif'
+          ctx.fillText(Math.round(confidence * 100) + '%', px, H * 0.45 + fs * 0.5 + 14)
+          ctx.fillText('Prediction', px, H * 0.45 + fs * 0.5 + 28)
+        }
+
+        const lgW = 80, lgH = 8, lgX = W - lgW - 12, lgY = H - 28
+        const lgGrad = ctx.createLinearGradient(lgX, 0, lgX + lgW, 0)
+        lgGrad.addColorStop(0, 'rgba(160,80,255,0.7)')
+        lgGrad.addColorStop(0.5, 'rgba(120,125,255,0.25)')
+        lgGrad.addColorStop(1, 'rgba(80,170,255,0.7)')
+        ctx.fillStyle = lgGrad
+        ctx.beginPath()
+        const lgR = lgH / 2
+        ctx.moveTo(lgX + lgR, lgY); ctx.lineTo(lgX + lgW - lgR, lgY)
+        ctx.quadraticCurveTo(lgX + lgW, lgY, lgX + lgW, lgY + lgR)
+        ctx.lineTo(lgX + lgW, lgY + lgH - lgR)
+        ctx.quadraticCurveTo(lgX + lgW, lgY + lgH, lgX + lgW - lgR, lgY + lgH)
+        ctx.lineTo(lgX + lgR, lgY + lgH)
+        ctx.quadraticCurveTo(lgX, lgY + lgH, lgX, lgY + lgH - lgR)
+        ctx.lineTo(lgX, lgY + lgR)
+        ctx.quadraticCurveTo(lgX, lgY, lgX + lgR, lgY)
+        ctx.closePath(); ctx.fill()
+
+        ctx.fillStyle = 'rgba(180,215,255,0.6)'
+        ctx.font = '8px system-ui, sans-serif'
+        ctx.textAlign = 'left'
+        ctx.fillText('\u22121', lgX, lgY - 3)
+        ctx.textAlign = 'right'
+        ctx.fillText('+1', lgX + lgW, lgY - 3)
+        ctx.textAlign = 'center'
+        ctx.fillText('Weight', lgX + lgW / 2, lgY + lgH + 11)
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault()
+        const r = canvas.getBoundingClientRect()
+        addNeuron(e.clientX - r.left, e.clientY - r.top)
+      })
+
+      digitBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectDigit(parseInt(btn.getAttribute('data-digit')))
+          btn.blur()
+        })
+      })
+
+      ctrlBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const action = btn.getAttribute('data-neural-action')
+          if (action === 'train') trainNetwork()
+          if (action === 'predict') runPredict()
+          if (action === 'clear') clearAll()
+          btn.blur()
+        })
+      })
+
+      if ('ResizeObserver' in window)
+        new ResizeObserver(() => resizeCanvas()).observe(canvas)
+      else
+        window.addEventListener('resize', resizeCanvas)
+
+      document.addEventListener('visibilitychange', () => { lastTime = performance.now() })
+
+      const animate = (now) => {
+        const dt = Math.min(now - lastTime, 50)
+        lastTime = now
+        update(dt)
+        render()
+        requestAnimationFrame(animate)
+      }
+
+      initOutput()
+      resizeCanvas()
+      syncStats()
+      lastTime = performance.now()
+      requestAnimationFrame(animate)
+    }
+  }
 
   /**
    * Animation on scroll

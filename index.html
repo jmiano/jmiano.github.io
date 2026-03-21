@@ -510,6 +510,46 @@
           </div>
         </div>
 
+        <div class="neural-garden" data-no-section-scroll="true">
+          <div class="neural-garden-header">
+            <div>
+              <span class="neural-garden-badge">Interactive</span>
+              <h3>Neural Garden</h3>
+              <p>Click inside a layer column to add neurons. The network runs a real forward pass with sigmoid activations and softmax output.</p>
+            </div>
+            <div class="neural-garden-controls">
+              <button type="button" class="neural-garden-btn neural-garden-btn-secondary" data-neural-action="clear">Reset</button>
+            </div>
+          </div>
+
+          <div class="neural-garden-digits" data-no-section-scroll="true">
+            <button type="button" class="neural-garden-digit" data-digit="0">0</button>
+            <button type="button" class="neural-garden-digit" data-digit="1">1</button>
+            <button type="button" class="neural-garden-digit" data-digit="2">2</button>
+            <button type="button" class="neural-garden-digit" data-digit="3">3</button>
+            <button type="button" class="neural-garden-digit" data-digit="4">4</button>
+            <button type="button" class="neural-garden-digit" data-digit="5">5</button>
+            <button type="button" class="neural-garden-digit" data-digit="6">6</button>
+            <button type="button" class="neural-garden-digit" data-digit="7">7</button>
+            <button type="button" class="neural-garden-digit" data-digit="8">8</button>
+            <button type="button" class="neural-garden-digit" data-digit="9">9</button>
+            <button type="button" class="neural-garden-btn" data-neural-action="predict" style="margin-left: 0.25rem; min-width: 5.5rem; text-align: center;">Predict</button>
+            <button type="button" class="neural-garden-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
+          </div>
+
+          <div class="neural-garden-stage" data-no-section-scroll="true">
+            <canvas id="neural-garden-canvas" aria-label="Interactive neural network visualization"></canvas>
+          </div>
+
+          <div class="neural-garden-footer">
+            <p id="neural-garden-status">Click the canvas to place your first neuron.</p>
+            <div class="neural-garden-stats">
+              <span><strong id="neural-garden-neurons">0</strong> neurons</span>
+              <span><strong id="neural-garden-connections">0</strong> connections</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section><!-- End Contact Section -->
 
