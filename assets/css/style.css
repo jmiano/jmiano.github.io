@@ -1253,10 +1253,6 @@ section {
   border: none;
   border-radius: 0;
   background: transparent;
-  transition: transform 0.2s ease;
-}
-.easter-egg-trigger:hover {
-  transform: translateY(-2px);
 }
 .easter-egg-motion {
   display: block;
@@ -1268,18 +1264,16 @@ section {
   display: block;
   width: 3rem;
   height: auto;
-  transition: transform 0.3s ease, opacity 0.32s ease;
+  transition: filter 0.25s ease, opacity 0.32s ease;
   pointer-events: none;
-  will-change: transform, opacity;
+  will-change: transform, filter, opacity;
   animation: egg-hop 5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
-}
-.easter-egg-trigger:hover .easter-egg-motion {
-  animation: none;
-  transform: rotate(8deg);
+  filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
 }
 .easter-egg-trigger:hover .easter-egg-icon {
-  animation: none;
-  transform: scale(1.1);
+  filter:
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.45))
+    drop-shadow(0 0 18px rgba(0, 102, 255, 0.25));
 }
 @keyframes egg-rock {
   0%   { transform: rotate(0deg); }
