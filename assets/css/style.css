@@ -1262,7 +1262,7 @@ section {
 }
 .easter-egg-icon {
   display: block;
-  width: 3rem;
+  width: 4rem;
   height: auto;
   transition: filter 0.25s ease, opacity 0.32s ease;
   pointer-events: none;
