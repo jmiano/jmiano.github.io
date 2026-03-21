@@ -616,35 +616,57 @@
 
       let isTraining = false
 
-      const trainNetwork = () => {
-        if (isTraining) return
-        const filled = []
-        for (let li = 0; li < NZONES; li++)
-          if (layers[li].length > 0) filled.push(li)
-        if (!filled.includes(0)) {
-          statusEl.textContent = 'Add input neurons first!'; return
-        }
-        if (conns.length === 0) {
-          statusEl.textContent = 'No connections. Add hidden neurons to bridge layers.'; return
-        }
+      const runOneSample = (pix, label, filled, lr) => {
+        for (const idx of layers[0])
+          neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (pix[neurons[idx].pixelIndex] || 0) : 0
 
-        isTraining = true
-        const trainData = []
-        for (let d = 0; d < 10; d++) {
-          trainData.push({ pix: DIGITS[d], label: d })
-          for (let a = 0; a < 4; a++) {
-            const noisy = DIGITS[d].map(v => Math.random() < 0.08 ? (1 - v) : v)
-            trainData.push({ pix: noisy, label: d })
+        for (let k = 1; k < filled.length; k++) {
+          const li = filled[k], pl = filled[k - 1]
+          for (const idx of layers[li]) {
+            let s = neurons[idx].bias
+            for (const c of conns)
+              if (c.to === idx && neurons[c.from].layer === pl)
+                s += neurons[c.from].fwdAct * c.weight
+            if (li === 3) neurons[idx].rawLogit = s
+            else neurons[idx].fwdAct = sigmoid(s)
           }
         }
 
-        const lr = 0.3, totalEpochs = 500, batchSize = 25
-        let epoch = 0
+        const logits = layers[3].map(i => neurons[i].rawLogit || 0)
+        const mx = Math.max(...logits)
+        const exps = logits.map(l => Math.exp(l - mx))
+        const tot = exps.reduce((a, b) => a + b, 0)
+        layers[3].forEach((idx, i) => { neurons[idx].fwdAct = exps[i] / tot })
 
-        const runOneSample = (pix, label) => {
+        layers[3].forEach(idx => {
+          neurons[idx].delta = neurons[idx].fwdAct - (neurons[idx].digitLabel === label ? 1 : 0)
+        })
+
+        for (let k = filled.length - 2; k >= 1; k--) {
+          const li = filled[k], nl = filled[k + 1]
+          for (const idx of layers[li]) {
+            let gs = 0
+            for (const c of conns)
+              if (c.from === idx && neurons[c.to].layer === nl)
+                gs += c.weight * neurons[c.to].delta
+            neurons[idx].delta = gs * neurons[idx].fwdAct * (1 - neurons[idx].fwdAct)
+          }
+        }
+
+        for (const c of conns) {
+          c.weight -= lr * neurons[c.from].fwdAct * neurons[c.to].delta
+          wCache.set(c.from + ',' + c.to, c.weight)
+        }
+        for (let k = 1; k < filled.length; k++)
+          for (const idx of layers[filled[k]])
+            neurons[idx].bias -= lr * neurons[idx].delta
+      }
+
+      const computeAccuracy = (filled) => {
+        let correct = 0
+        for (let d = 0; d < 10; d++) {
           for (const idx of layers[0])
-            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (pix[neurons[idx].pixelIndex] || 0) : 0
-
+            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
           for (let k = 1; k < filled.length; k++) {
             const li = filled[k], pl = filled[k - 1]
             for (const idx of layers[li]) {
@@ -652,76 +674,90 @@
               for (const c of conns)
                 if (c.to === idx && neurons[c.from].layer === pl)
                   s += neurons[c.from].fwdAct * c.weight
-              if (li === 3) neurons[idx].rawLogit = s
-              else neurons[idx].fwdAct = sigmoid(s)
+              neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
             }
           }
+          let bestI = 0
+          for (let i = 1; i < layers[3].length; i++)
+            if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
+          if (neurons[layers[3][bestI]].digitLabel === d) correct++
+        }
+        return correct
+      }
 
-          const logits = layers[3].map(i => neurons[i].rawLogit || 0)
-          const mx = Math.max(...logits)
-          const exps = logits.map(l => Math.exp(l - mx))
-          const tot = exps.reduce((a, b) => a + b, 0)
-          layers[3].forEach((idx, i) => { neurons[idx].fwdAct = exps[i] / tot })
+      const trainNetwork = () => {
+        if (isTraining) return
+        const filled = []
+        for (let li = 0; li < NZONES; li++)
+          if (layers[li].length > 0) filled.push(li)
+        if (!filled.includes(0)) { statusEl.textContent = 'Add input neurons first!'; return }
+        if (conns.length === 0) { statusEl.textContent = 'No connections. Add hidden neurons to bridge layers.'; return }
 
-          layers[3].forEach(idx => {
-            neurons[idx].delta = neurons[idx].fwdAct - (neurons[idx].digitLabel === label ? 1 : 0)
+        isTraining = true
+        predAlpha = 0; pulseTime = -1; pixPulse = -1
+
+        const trainData = []
+        for (let d = 0; d < 10; d++)
+          for (let a = 0; a < 8; a++)
+            trainData.push({ pix: DIGITS[d].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06), label: d })
+
+        const lr = 0.5, totalEpochs = 500, epochsPerFrame = 3
+        let epoch = 0, lastAcc = 0
+
+        const shuffle = (arr) => {
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+          }
+        }
+
+        const trainFrame = () => {
+          for (let b = 0; b < epochsPerFrame && epoch < totalEpochs; b++, epoch++) {
+            shuffle(trainData)
+            for (const sample of trainData)
+              runOneSample(sample.pix, sample.label, filled, lr)
+          }
+
+          const lastSample = trainData[trainData.length - 1]
+          currentDigit = lastSample.label
+          digitPixels = lastSample.pix.map(v => v > 0.3 ? 0.6 + Math.random() * 0.25 : Math.random() * 0.04)
+          inputAlpha = 1
+          digitBtns.forEach(btn =>
+            btn.classList.toggle('active', parseInt(btn.getAttribute('data-digit')) === lastSample.label))
+
+          neurons.forEach(n => { if (n.fwdAct !== undefined) n.act = n.fwdAct })
+
+          let bestOut = 0
+          for (let i = 1; i < layers[3].length; i++)
+            if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestOut]].fwdAct) bestOut = i
+          prediction = neurons[layers[3][bestOut]].digitLabel
+          confidence = neurons[layers[3][bestOut]].fwdAct || 0
+          predAlpha = 1
+
+          const maxGrad = conns.reduce((mx, c) =>
+            Math.max(mx, Math.abs((neurons[c.from].fwdAct || 0) * (neurons[c.to].delta || 0))), 0.001)
+          conns.forEach(c => {
+            c.backPulse = Math.abs((neurons[c.from].fwdAct || 0) * (neurons[c.to].delta || 0)) / maxGrad
           })
 
-          for (let k = filled.length - 2; k >= 1; k--) {
-            const li = filled[k], nl = filled[k + 1]
-            for (const idx of layers[li]) {
-              let gs = 0
-              for (const c of conns)
-                if (c.from === idx && neurons[c.to].layer === nl)
-                  gs += c.weight * neurons[c.to].delta
-              neurons[idx].delta = gs * neurons[idx].fwdAct * (1 - neurons[idx].fwdAct)
-            }
-          }
+          if (epoch % 30 < epochsPerFrame) lastAcc = computeAccuracy(filled)
 
-          for (const c of conns) {
-            c.weight -= lr * neurons[c.from].fwdAct * neurons[c.to].delta
-            wCache.set(c.from + ',' + c.to, c.weight)
-          }
-          for (let k = 1; k < filled.length; k++)
-            for (const idx of layers[filled[k]])
-              neurons[idx].bias -= lr * neurons[idx].delta
-        }
-
-        const trainBatch = () => {
-          for (let b = 0; b < batchSize && epoch < totalEpochs; b++, epoch++)
-            for (const sample of trainData)
-              runOneSample(sample.pix, sample.label)
-
-          statusEl.textContent = 'Training... ' + Math.round(epoch / totalEpochs * 100) + '%'
+          const pct = Math.round(epoch / totalEpochs * 100)
+          statusEl.textContent = 'Training ' + pct + '%  |  Epoch ' + epoch + '/' + totalEpochs + '  |  Accuracy: ' + lastAcc + '/10'
 
           if (epoch < totalEpochs) {
-            requestAnimationFrame(trainBatch)
+            requestAnimationFrame(trainFrame)
           } else {
             isTraining = false
-            let correct = 0
-            for (let d = 0; d < 10; d++) {
-              for (const idx of layers[0])
-                neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
-              for (let k = 1; k < filled.length; k++) {
-                const li = filled[k], pl = filled[k - 1]
-                for (const idx of layers[li]) {
-                  let s = neurons[idx].bias
-                  for (const c of conns)
-                    if (c.to === idx && neurons[c.from].layer === pl)
-                      s += neurons[c.from].fwdAct * c.weight
-                  neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
-                }
-              }
-              let bestI = 0
-              for (let i = 1; i < layers[3].length; i++)
-                if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
-              if (neurons[layers[3][bestI]].digitLabel === d) correct++
-            }
-            statusEl.textContent = 'Trained! Accuracy: ' + correct + '/10. Pick a digit to test.'
+            conns.forEach(c => { c.backPulse = 0 })
+            neurons.forEach(n => { n.act = 0 })
+            predAlpha = 0; prediction = -1
+            const acc = computeAccuracy(filled)
+            statusEl.textContent = 'Trained! Accuracy: ' + acc + '/10. Pick a digit to test.'
           }
         }
 
-        trainBatch()
+        trainFrame()
       }
 
       const clearAll = () => {
@@ -736,8 +772,9 @@
         neurons.forEach(n => {
           n.phase += dt * 0.002
           if (n.birthFlash > 0.01) n.birthFlash *= 0.93; else n.birthFlash = 0
-          if (pulseTime < 0) n.act *= 0.985
+          if (pulseTime < 0 && !isTraining) n.act *= 0.985
         })
+        if (!isTraining) conns.forEach(c => { if (c.backPulse > 0) c.backPulse *= 0.85 })
         if (pulseTime < 0) return
         pulseTime += dt
 
@@ -899,6 +936,12 @@
             ctx.fillStyle = 'rgba(230,245,255,0.95)'
             ctx.beginPath(); ctx.arc(px, py, 1.8, 0, Math.PI * 2); ctx.fill()
           }
+
+          if (c.backPulse > 0.05) {
+            ctx.strokeStyle = 'rgba(255,160,60,' + (c.backPulse * 0.25) + ')'
+            ctx.lineWidth = 0.8 + c.backPulse * 1.2
+            ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(a.x, a.y); ctx.stroke()
+          }
         }
 
         neurons.forEach(n => {
@@ -944,8 +987,7 @@
           ctx.textBaseline = 'alphabetic'
           ctx.fillStyle = 'rgba(180,215,255,' + (predAlpha * 0.7) + ')'
           ctx.font = '9px system-ui, sans-serif'
-          ctx.fillText(Math.round(confidence * 100) + '%', px, H * 0.45 + fs * 0.5 + 14)
-          ctx.fillText('Prediction', px, H * 0.45 + fs * 0.5 + 28)
+          ctx.fillText(Math.round(confidence * 100) + '% Confidence', px, H * 0.45 + fs * 0.5 + 14)
         }
 
         const lgW = 80, lgH = 8, lgX = W - lgW - 12, lgY = H - 28
