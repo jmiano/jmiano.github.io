@@ -310,9 +310,29 @@ section {
   padding: 0;
 }
 .about .content ul li {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
+  break-inside: avoid;
+}
+.about .about-photo {
+  max-height: 400px;
+}
+.about .content ul.about-details {
+  columns: 2;
+}
+@media (max-width: 1199px) {
+  .about .content ul.about-details {
+    columns: 1;
+  }
+}
+@media (max-width: 767px) {
+  .about .about-photo {
+    max-height: none;
+  }
+}
+.about .content ul li:last-child {
+  margin-bottom: 0;
 }
 .about .content ul strong {
   margin-right: 10px;
@@ -464,9 +484,18 @@ section {
   background: url('../img/bullets/java-logo.png');
   background-repeat: no-repeat;
   background-position: left center;
-  background-size: 20px;  /* Set the size of the image here */
+  background-size: 20px;
   padding-left: 30px;
-  list-style-type: none;  /* Remove the default bullet point */
+  list-style-type: none;
+}
+
+.skills .typescript-li {
+  background: url('../img/bullets/typescript-logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  padding-left: 30px;
+  list-style-type: none;
 }
 
 .skills .c-li {

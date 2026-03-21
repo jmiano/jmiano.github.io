@@ -44,7 +44,9 @@
    * Navbar links active state on scroll
    */
   let navbarlinks = select('#navbar .scrollto', true)
+  let hoverActive = false
   const navbarlinksActive = () => {
+    if (hoverActive) return
     let position = window.scrollY + 200
     navbarlinks.forEach(navbarlink => {
       if (!navbarlink.hash) return
@@ -59,6 +61,21 @@
   }
   window.addEventListener('load', navbarlinksActive)
   onscroll(document, navbarlinksActive)
+
+  navbarlinks.forEach(navbarlink => {
+    if (!navbarlink.hash) return
+    let section = select(navbarlink.hash)
+    if (!section) return
+    section.addEventListener('mouseenter', () => {
+      hoverActive = true
+      navbarlinks.forEach(nl => nl.classList.remove('active'))
+      navbarlink.classList.add('active')
+    })
+    section.addEventListener('mouseleave', () => {
+      hoverActive = false
+      navbarlinksActive()
+    })
+  })
 
   /**
    * Scrolls to an element with header offset
