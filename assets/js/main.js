@@ -1142,7 +1142,7 @@
           if (evt.target === card && evt.propertyName === 'height') finish()
         }
         card.addEventListener('transitionend', onEnd)
-        window.setTimeout(finish, EGG_MORPH_MS + 80)
+        window.setTimeout(finish, EGG_MORPH_MS + 20)
       })
 
       const createEggMorph = (rect, expanded, includeContent = false) => {
@@ -1225,9 +1225,9 @@
         const startRect = neuralGarden.getBoundingClientRect()
         const card = createEggMorph(startRect, true)
 
-        easterEgg.classList.add('is-content-hidden')
         easterEgg.style.display = 'flex'
-        easterEgg.style.visibility = 'hidden'
+        easterEgg.style.opacity = '0'
+        easterEgg.style.transition = 'none'
         easterEgg.style.pointerEvents = 'none'
         const endRect = easterEgg.getBoundingClientRect()
 
@@ -1236,13 +1236,16 @@
 
         animateEggMorph(card, endRect, false)
 
-        await waitForEggMorph(card)
-        easterEgg.style.visibility = ''
-        easterEgg.style.pointerEvents = ''
-        clearEggMorph()
         requestAnimationFrame(() => {
-          easterEgg.classList.remove('is-content-hidden')
+          easterEgg.style.transition = `opacity 600ms ease 120ms`
+          easterEgg.style.opacity = '1'
         })
+
+        await waitForEggMorph(card)
+        clearEggMorph()
+        easterEgg.style.transition = ''
+        easterEgg.style.opacity = ''
+        easterEgg.style.pointerEvents = ''
         eggAnimating = false
       }
 

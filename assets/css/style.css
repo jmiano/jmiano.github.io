@@ -1245,28 +1245,94 @@ section {
 .easter-egg-trigger {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: center;
   margin-top: 1.5rem;
   width: fit-content;
   cursor: pointer;
-  padding: 0.7rem 1.4rem;
+  padding: 0;
   border: none;
-  border-radius: 20px;
-  background: #0066ff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 6px 18px rgba(0, 102, 255, 0.25);
+  border-radius: 0;
+  background: transparent;
+  transition: transform 0.2s ease;
 }
 .easter-egg-trigger:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 102, 255, 0.3);
+}
+.easter-egg-motion {
+  display: block;
+  transform-origin: 50% 86%;
+  will-change: transform;
+  animation: egg-rock 5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
 }
 .easter-egg-icon {
-  font-size: 1.4rem;
-  line-height: 1;
+  display: block;
+  width: 3rem;
+  height: auto;
   transition: transform 0.3s ease, opacity 0.32s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: egg-hop 5s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+.easter-egg-trigger:hover .easter-egg-motion {
+  animation: none;
+  transform: rotate(8deg);
 }
 .easter-egg-trigger:hover .easter-egg-icon {
-  transform: scale(1.15) rotate(10deg);
+  animation: none;
+  transform: scale(1.1);
+}
+@keyframes egg-rock {
+  0%   { transform: rotate(0deg); }
+  6%   { transform: rotate(-4deg); }
+  12%  { transform: rotate(3.4deg); }
+  18%  { transform: rotate(-2.8deg); }
+  24%  { transform: rotate(2.1deg); }
+  30%  { transform: rotate(-1.6deg); }
+  36%  { transform: rotate(1.1deg); }
+  40%  { transform: rotate(-0.8deg); }
+  46%  { transform: rotate(3deg); }
+  52%  { transform: rotate(-2.5deg); }
+  58%  { transform: rotate(1.9deg); }
+  64%  { transform: rotate(-1.4deg); }
+  70%  { transform: rotate(1deg); }
+  74%  { transform: rotate(-0.6deg); }
+  80%  { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes egg-hop {
+  0%, 28% {
+    transform: translateY(0) scale(1, 1);
+  }
+  31% {
+    transform: translateY(0) scale(1.03, 0.97);
+  }
+  34% {
+    transform: translateY(-4.5px) scale(0.98, 1.02);
+  }
+  37% {
+    transform: translateY(0) scale(1.02, 0.98);
+  }
+  39% {
+    transform: translateY(-1.2px) scale(0.995, 1.005);
+  }
+  41%, 68% {
+    transform: translateY(0) scale(1, 1);
+  }
+  71% {
+    transform: translateY(0) scale(1.02, 0.98);
+  }
+  74% {
+    transform: translateY(-3px) scale(0.99, 1.01);
+  }
+  77% {
+    transform: translateY(0) scale(1.015, 0.985);
+  }
+  79% {
+    transform: translateY(-0.8px) scale(1, 1);
+  }
+  81%, 100% {
+    transform: translateY(0) scale(1, 1);
+  }
 }
 .easter-egg-label {
   font-size: 1.15rem;
@@ -1289,8 +1355,8 @@ section {
   height: 0;
   border: 1px solid transparent;
   border-radius: 20px;
-  background: #0066ff;
-  box-shadow: 0 6px 18px rgba(0, 102, 255, 0.25);
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
   pointer-events: none;
   z-index: 9999;
