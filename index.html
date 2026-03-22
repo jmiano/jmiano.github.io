@@ -14,17 +14,20 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Joseph Miano">
   <meta property="og:title" content="Joseph Miano | AI Engineer &amp; Solution Architect">
   <meta property="og:description" content="AI Engineer and Solution Architect with 6+ years building production AI systems. GenAI, LLMs, RAG, agents, deep learning, and more.">
   <meta property="og:url" content="https://josephmiano.com/">
   <meta property="og:image" content="https://josephmiano.com/assets/img/profile-img.jpg">
+  <meta property="og:image:alt" content="Joseph Miano - AI Engineer and Solution Architect">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Joseph Miano | AI Engineer &amp; Solution Architect">
   <meta name="twitter:description" content="AI Engineer and Solution Architect with 6+ years building production AI systems. GenAI, LLMs, RAG, agents, deep learning, and more.">
   <meta name="twitter:image" content="https://josephmiano.com/assets/img/profile-img.jpg">
+  <meta name="twitter:image:alt" content="Joseph Miano - AI Engineer and Solution Architect">
 
   <!-- Favicons -->
   <link href="assets/img/brain-blue.png" rel="icon">
@@ -53,52 +56,175 @@
     "@graph": [
       {
         "@type": "WebSite",
+        "@id": "https://josephmiano.com/#website",
         "name": "Joseph Miano",
-        "url": "https://josephmiano.com/"
+        "url": "https://josephmiano.com/",
+        "publisher": {"@id": "https://josephmiano.com/#person"},
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://josephmiano.com/#webpage",
+        "url": "https://josephmiano.com/",
+        "name": "Joseph Miano | AI Engineer & Solution Architect",
+        "isPartOf": {"@id": "https://josephmiano.com/#website"},
+        "about": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2021-01-01",
+        "dateModified": "2026-03-20",
+        "description": "AI Engineer and Solution Architect with 6+ years building production AI systems. Portfolio featuring GenAI, LLMs, RAG pipelines, agents, deep learning, computer vision, and NLP.",
+        "inLanguage": "en-US",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://josephmiano.com/assets/img/profile-img.jpg"
+        }
       },
       {
         "@type": "ProfilePage",
-        "mainEntity": {
-          "@type": "Person",
-          "name": "Joseph Miano",
-          "jobTitle": "AI Engineer & Solution Architect",
-          "url": "https://josephmiano.com/",
-          "email": "j.miano@outlook.com",
-          "image": "https://josephmiano.com/assets/img/profile-img.jpg",
-          "description": "AI Engineer and Solution Architect with 6+ years building production AI systems across GenAI, LLMs, RAG, agents, deep learning, computer vision, and NLP.",
-          "sameAs": [
-            "https://www.linkedin.com/in/joseph-miano",
-            "https://github.com/jmiano",
-            "https://scholar.google.com/citations?user=P4LGsnYAAAAJ&hl=en"
-          ],
-          "worksFor": {
-            "@type": "Organization",
-            "name": "Fireworks AI"
+        "@id": "https://josephmiano.com/#profilepage",
+        "mainEntity": {"@id": "https://josephmiano.com/#person"},
+        "dateCreated": "2021-01-01",
+        "dateModified": "2026-03-20"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://josephmiano.com/#person",
+        "name": "Joseph Miano",
+        "givenName": "Joseph",
+        "familyName": "Miano",
+        "additionalName": ["Joe", "Joseph D Miano", "Joseph Donald Miano"],
+        "disambiguatingDescription": "AI Engineer and Solution Architect specializing in GenAI, LLMs, and deep learning, based in San Francisco. Not to be confused with the vascular biology researcher of the same name.",
+        "jobTitle": "Applied Machine Learning Engineer",
+        "description": "AI Engineer and Solution Architect with 6+ years building production AI systems across GenAI, LLMs, RAG, agents, deep learning, computer vision, and NLP.",
+        "url": "https://josephmiano.com/",
+        "email": "j.miano@outlook.com",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://josephmiano.com/assets/img/profile-img.jpg",
+          "caption": "Joseph Miano - AI Engineer"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/in/joseph-miano",
+          "https://github.com/jmiano",
+          "https://scholar.google.com/citations?user=P4LGsnYAAAAJ&hl=en",
+          "https://huggingface.co/jmiano",
+          "https://dblp.org/pid/294/3571.html"
+        ],
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Fireworks AI",
+          "url": "https://fireworks.ai/"
+        },
+        "alumniOf": [
+          {
+            "@type": "CollegeOrUniversity",
+            "name": "Georgia Institute of Technology",
+            "url": "https://www.gatech.edu/"
           },
-          "alumniOf": [
-            {
-              "@type": "CollegeOrUniversity",
-              "name": "Georgia Institute of Technology"
-            },
-            {
-              "@type": "CollegeOrUniversity",
-              "name": "University of Miami"
-            }
-          ],
-          "knowsAbout": [
-            "Artificial Intelligence",
-            "Large Language Models",
-            "Generative AI",
-            "RAG Pipelines",
-            "AI Agents",
-            "Deep Learning",
-            "Computer Vision",
-            "Natural Language Processing",
-            "Machine Learning",
-            "PyTorch",
-            "Python"
-          ]
+          {
+            "@type": "CollegeOrUniversity",
+            "name": "University of Miami",
+            "url": "https://www.miami.edu/"
+          }
+        ],
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "degree",
+            "educationalLevel": "Master of Science",
+            "about": {"@type": "DefinedTerm", "name": "Computer Science"},
+            "recognizedBy": {"@type": "CollegeOrUniversity", "name": "Georgia Institute of Technology"}
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "degree",
+            "educationalLevel": "Bachelor of Science",
+            "about": {"@type": "DefinedTerm", "name": "Computer Science"},
+            "recognizedBy": {"@type": "CollegeOrUniversity", "name": "Georgia Institute of Technology"}
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "degree",
+            "educationalLevel": "Bachelor of Science",
+            "about": {"@type": "DefinedTerm", "name": "Neuroscience"},
+            "recognizedBy": {"@type": "CollegeOrUniversity", "name": "University of Miami"}
+          }
+        ],
+        "hasOccupation": {
+          "@type": "Occupation",
+          "name": "AI Engineer",
+          "occupationalCategory": "15-2051",
+          "skills": "Machine Learning, Deep Learning, Generative AI, Large Language Models, RAG, Computer Vision, NLP"
+        },
+        "knowsAbout": [
+          "Artificial Intelligence",
+          "Large Language Models",
+          "Generative AI",
+          "RAG Pipelines",
+          "AI Agents",
+          "Deep Learning",
+          "Computer Vision",
+          "Natural Language Processing",
+          "Machine Learning",
+          "PyTorch",
+          "Python",
+          "Retrieval-Augmented Generation",
+          "Fine-tuning LLMs",
+          "Context Engineering",
+          "Solution Architecture"
+        ],
+        "knowsLanguage": [
+          {"@type": "Language", "name": "English"},
+          {"@type": "Language", "name": "French"},
+          {"@type": "Language", "name": "Spanish"}
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "San Francisco",
+          "addressRegion": "CA",
+          "addressCountry": "US"
         }
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Using Event-Based Web-Scraping Methods and Bidirectional Transformers to Characterize COVID-19 Outbreaks in Food Production and Retail Settings",
+        "author": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2021",
+        "url": "https://link.springer.com/chapter/10.1007/978-3-030-77211-6_21",
+        "publisher": {"@type": "Organization", "name": "Springer"},
+        "isPartOf": {"@type": "PublicationVolume", "name": "Lecture Notes in Artificial Intelligence"}
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Multi-Scale Modeling of Neural Structure in X-Ray Imagery",
+        "author": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2021",
+        "url": "https://ieeexplore.ieee.org/abstract/document/9506174",
+        "publisher": {"@type": "Organization", "name": "IEEE"}
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Bayesian optimization for modular black-box systems with switching costs",
+        "author": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2020",
+        "url": "https://proceedings.mlr.press/v161/lin21c.html",
+        "publisher": {"@type": "Organization", "name": "PMLR"}
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "A three-dimensional thalamocortical dataset for characterizing brain heterogeneity",
+        "author": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2020",
+        "url": "https://www.nature.com/articles/s41597-020-00692-y",
+        "publisher": {"@type": "Organization", "name": "Nature"}
+      },
+      {
+        "@type": "Thesis",
+        "headline": "Multi-task learning for neural image classification and segmentation using a 3D/2D contextual U-Net model",
+        "author": {"@id": "https://josephmiano.com/#person"},
+        "datePublished": "2020",
+        "url": "https://repository.gatech.edu/entities/publication/5516d150-8241-43d4-897c-60e61f9ffe4b",
+        "inSupportOf": "Bachelor of Science in Computer Science",
+        "sourceOrganization": {"@type": "CollegeOrUniversity", "name": "Georgia Institute of Technology"}
       }
     ]
   }
