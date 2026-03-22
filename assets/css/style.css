@@ -1685,7 +1685,7 @@ section {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  margin-top: 0.09rem;
+  margin-top: 0.08rem;
   margin-right: 0.8rem;
   overflow: visible;
   border-radius: 0 0 10px 10px;
