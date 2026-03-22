@@ -820,7 +820,7 @@
           ctx.fillStyle = 'rgba(255,255,255,0.04)'
           ctx.fillRect(zl, 0, zw, H)
           if (z > 0) {
-            ctx.strokeStyle = 'rgba(120,180,255,0.2)'
+            ctx.strokeStyle = 'rgba(120,180,255,0.3)'
             ctx.lineWidth = 1; ctx.setLineDash([4, 4])
             ctx.beginPath(); ctx.moveTo(zl, 0); ctx.lineTo(zl, H); ctx.stroke()
             ctx.setLineDash([])
