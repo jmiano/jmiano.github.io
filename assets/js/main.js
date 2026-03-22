@@ -528,8 +528,8 @@
         const hasDigit = currentDigit >= 0
         if (!hasInput) return 'Add neurons to the Input column.'
         if (!hasHidden) return 'Add hidden neurons to improve predictions.'
-        if (!hasDigit) return 'Pick a digit, then try clicking Predict!'
-        return 'Try clicking Predict!'
+        if (!hasDigit) return 'Pick a digit, then try clicking Predict.'
+        return 'Try clicking Predict.'
       }
 
       const addNeuron = (px, py) => {
