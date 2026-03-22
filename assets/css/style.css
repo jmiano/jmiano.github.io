@@ -1570,20 +1570,32 @@ section {
   transform: translateY(-1px);
   box-shadow: none;
 }
-.neural-digit-classifier-digits {
+.neural-digit-classifier-input-row {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 0.75rem;
   flex-wrap: wrap;
 }
+.neural-digit-classifier-digits {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.neural-digit-classifier-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
 .neural-digit-classifier-digit {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   border: 2px solid rgba(0, 102, 255, 0.15);
   border-radius: 10px;
   background: rgba(0, 102, 255, 0.04);
   color: #173b6c;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1716,6 +1728,36 @@ section {
   height: clamp(300px, 42vw, 420px);
   border-radius: 18px;
   background: #0a1628;
+}
+.neural-digit-classifier-canvas-popup {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  padding: 0.6rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  animation: ndcPopupFadeIn 0.15s ease;
+}
+@keyframes ndcPopupFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.neural-digit-classifier-canvas-popup .neural-digit-classifier-digit {
+  width: 38px;
+  height: 38px;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  transition: all 0.12s ease;
+}
+.neural-digit-classifier-canvas-popup .neural-digit-classifier-digit:hover {
+  background: #0066ff;
+  color: #fff;
+  border-color: #0066ff;
+  box-shadow: 0 3px 10px rgba(0, 102, 255, 0.35);
+  transform: translateY(-1px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -1835,9 +1877,9 @@ section {
   }
 
   .neural-digit-classifier-digit {
-    width: 34px;
-    height: 34px;
-    font-size: 0.95rem;
+    width: 38px;
+    height: 38px;
+    font-size: 1.05rem;
   }
 }
 @media (max-width: 575px) {
@@ -1869,9 +1911,9 @@ section {
   }
 
   .neural-digit-classifier-digit {
-    width: 28px;
-    height: 28px;
-    font-size: 0.85rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
   }
 
   .neural-digit-classifier-digits {

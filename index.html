@@ -734,10 +734,10 @@
                 <h3>Neural Digit Classifier</h3>
                 <p>Build your own neural network and teach it to recognize digits:</p>
                 <ol class="neural-digit-classifier-steps">
-                  <li>Click in the columns below to add neurons to your network</li>
-                  <li>Pick a digit <strong>(0–9)</strong> below for the network to recognize</li>
-                  <li>Click <strong>Predict</strong> to see the network's guess</li>
-                  <li>Click <strong>Train</strong> to help it learn</li>
+                  <li><strong>Click</strong> in the columns below to add neurons</li>
+                  <li><strong>Pick a digit</strong> (0–9) for the network to recognize</li>
+                  <li>Click <strong>Predict</strong> to run the network and see its prediction</li>
+                  <li>Click <strong>Train</strong> to teach the network and improve its accuracy</li>
                 </ol>
               </div>
               <div class="neural-digit-classifier-controls" style="position: relative;">
@@ -758,25 +758,39 @@
               </div>
             </div>
 
-            <div class="neural-digit-classifier-digits" data-no-section-scroll="true">
-              <button type="button" class="neural-digit-classifier-digit" data-digit="0">0</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="1">1</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="2">2</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="3">3</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="4">4</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="5">5</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="6">6</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="7">7</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="8">8</button>
-              <button type="button" class="neural-digit-classifier-digit" data-digit="9">9</button>
-              <span style="display: inline-flex; gap: 0.5rem; flex-shrink: 0; margin-left: 0.35rem;">
+            <div class="neural-digit-classifier-input-row" data-no-section-scroll="true">
+              <div class="neural-digit-classifier-digits">
+                <button type="button" class="neural-digit-classifier-digit" data-digit="0">0</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="1">1</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="2">2</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="3">3</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="4">4</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="5">5</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="6">6</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="7">7</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="8">8</button>
+                <button type="button" class="neural-digit-classifier-digit" data-digit="9">9</button>
+              </div>
+              <div class="neural-digit-classifier-actions">
                 <button type="button" class="neural-digit-classifier-btn" data-neural-action="predict" style="min-width: 5.5rem; text-align: center;">Predict</button>
                 <button type="button" class="neural-digit-classifier-btn" data-neural-action="train" style="min-width: 5.5rem; text-align: center;">Train</button>
-              </span>
+              </div>
             </div>
 
             <div class="neural-digit-classifier-stage" data-no-section-scroll="true">
               <canvas id="neural-digit-classifier-canvas" aria-label="Interactive neural network visualization"></canvas>
+              <div class="neural-digit-classifier-canvas-popup" style="display: none;" data-no-section-scroll="true">
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="0">0</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="1">1</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="2">2</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="3">3</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="4">4</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="5">5</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="6">6</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="7">7</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="8">8</button>
+                <button type="button" class="neural-digit-classifier-digit" data-canvas-digit="9">9</button>
+              </div>
             </div>
 
             <div class="neural-digit-classifier-footer">

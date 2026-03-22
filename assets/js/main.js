@@ -422,6 +422,8 @@
       let pulseTime = -1
       let pixPulse = -1
       let lastTime = 0
+      let globalTime = 0
+      let digitBoxRect = { x: 0, y: 0, w: 0, h: 0 }
 
       const cachedWeight = (a, b) => {
         const k = a + ',' + b
@@ -485,7 +487,9 @@
       }
 
       let statusTimer = null
+      let initialStatus = true
       const showStatus = (msg, duration) => {
+        initialStatus = false
         if (statusTimer) clearTimeout(statusTimer)
         statusEl.style.transition = 'none'
         statusEl.style.opacity = '1'
@@ -600,7 +604,7 @@
 
       const runPredict = () => {
         if (currentDigit < 0) {
-          showStatus('Select a digit first!', 2500)
+          showStatus('Pick a digit first!', 2500)
           return
         }
         if (layers[0].length === 0) {
@@ -768,6 +772,7 @@
       }
 
       const update = (dt) => {
+        globalTime += dt
         neurons.forEach(n => {
           n.phase += dt * 0.002
           if (n.birthFlash > 0.01) n.birthFlash *= 0.93; else n.birthFlash = 0
@@ -830,15 +835,29 @@
           ctx.textAlign = 'center'
           ctx.fillText(ZLABELS[z], ZX[z] * W, 14)
           if (z < 3 && layers[z].length === 0) {
-            ctx.fillStyle = 'rgba(180,215,255,0.5)'
+            const pulseAlpha = 0.5 + 0.2 * Math.sin(globalTime * 0.002)
+            const cx = ZX[z] * W, cy = H / 2 - 6
+            const cr = 12
+            ctx.strokeStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
+            ctx.lineWidth = 1.2
+            ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.stroke()
+            ctx.fillStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
+            ctx.font = '16px system-ui, sans-serif'
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
+            ctx.fillText('+', cx, cy)
+            ctx.textBaseline = 'alphabetic'
+            ctx.fillStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
             ctx.font = '9px system-ui, sans-serif'
-            ctx.fillText('click to add', ZX[z] * W, H / 2)
+            ctx.fillText('click to add', cx, cy + cr + 13)
+            ctx.fillText('neurons', cx, cy + cr + 25)
           }
         }
 
         const dX = W * 0.015, dW = W * 0.11, dH2 = H * (W < 500 ? 0.12 : 0.26)
         const dY = H / 2 - dH2
         const dPad = 6
+        digitBoxRect = { x: dX, y: dY, w: dW, h: dH2 * 2 }
         ctx.strokeStyle = 'rgba(120,180,255,0.4)'
         ctx.lineWidth = 1; ctx.setLineDash([3, 3])
         ctx.strokeRect(dX, dY, dW, dH2 * 2)
@@ -878,11 +897,21 @@
               ctx.closePath(); ctx.fill()
             }
         } else {
-          ctx.fillStyle = 'rgba(180,215,255,0.5)'
-          ctx.font = '9px system-ui, sans-serif'
+          const digitPulse = 0.5 + 0.2 * Math.sin(globalTime * 0.002)
+          const dcx = dX + dW / 2, dcy = H / 2 - 10
+          const dcr = 12
+          ctx.strokeStyle = 'rgba(180,215,255,' + digitPulse + ')'
+          ctx.lineWidth = 1.2
+          ctx.beginPath(); ctx.arc(dcx, dcy, dcr, 0, Math.PI * 2); ctx.stroke()
+          ctx.fillStyle = 'rgba(180,215,255,' + digitPulse + ')'
+          ctx.font = '16px system-ui, sans-serif'
           ctx.textAlign = 'center'
-          ctx.fillText('Pick a', dX + dW / 2, H / 2 - 4)
-          ctx.fillText('digit', dX + dW / 2, H / 2 + 10)
+          ctx.textBaseline = 'middle'
+          ctx.fillText('+', dcx, dcy)
+          ctx.textBaseline = 'alphabetic'
+          ctx.font = '9px system-ui, sans-serif'
+          ctx.fillText('click to pick', dcx, dcy + dcr + 13)
+          ctx.fillText('a digit', dcx, dcy + dcr + 25)
         }
 
         if (digitPixels && layers[0].length > 0) {
@@ -1085,12 +1114,53 @@
         showStatus('Removed neuron from ' + ZLABELS[li] + '.', 2500)
       }
 
+      const isInDigitBox = (px, py) => {
+        const d = digitBoxRect
+        return px >= d.x && px <= d.x + d.w && py >= d.y && py <= d.y + d.h
+      }
+
+      const canvasPopup = select('.neural-digit-classifier-canvas-popup')
+      const canvasDigitBtns = select('[data-canvas-digit]', true)
+
+      const showCanvasPopup = (canvasX, canvasY) => {
+        const r = canvas.getBoundingClientRect()
+        const stage = canvas.parentElement
+        const sr = stage.getBoundingClientRect()
+        let left = r.left - sr.left + canvasX + 8
+        let top = r.top - sr.top + canvasY - 40
+        const popW = 210, popH = 100
+        if (left + popW > sr.width) left = sr.width - popW - 8
+        if (top + popH > sr.height) top = sr.height - popH - 8
+        if (top < 4) top = 4
+        if (left < 4) left = 4
+        canvasPopup.style.left = left + 'px'
+        canvasPopup.style.top = top + 'px'
+        canvasPopup.style.display = 'grid'
+      }
+
+      const hideCanvasPopup = () => { canvasPopup.style.display = 'none' }
+
+      canvasDigitBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          selectDigit(parseInt(btn.getAttribute('data-canvas-digit')))
+          hideCanvasPopup()
+        })
+      })
+
+      document.addEventListener('pointerdown', (e) => {
+        if (canvasPopup.style.display !== 'none' && !canvasPopup.contains(e.target))
+          hideCanvasPopup()
+      })
+
       canvas.addEventListener('pointermove', (e) => {
         const r = canvas.getBoundingClientRect()
         mouseX = e.clientX - r.left
         mouseY = e.clientY - r.top
         hoverNeuron = findNeuronAt(mouseX, mouseY)
-        canvas.style.cursor = hoverNeuron >= 0 ? 'pointer' : 'crosshair'
+        if (hoverNeuron >= 0) canvas.style.cursor = 'pointer'
+        else if (isInDigitBox(mouseX, mouseY)) canvas.style.cursor = 'pointer'
+        else canvas.style.cursor = 'crosshair'
       })
 
       canvas.addEventListener('pointerleave', () => {
@@ -1101,8 +1171,15 @@
 
       canvas.addEventListener('pointerdown', (e) => {
         e.preventDefault()
+        e.stopPropagation()
         const r = canvas.getBoundingClientRect()
         const px = e.clientX - r.left, py = e.clientY - r.top
+        if (isInDigitBox(px, py)) {
+          if (canvasPopup.style.display !== 'none') hideCanvasPopup()
+          else showCanvasPopup(px, py)
+          return
+        }
+        hideCanvasPopup()
         const hit = findNeuronAt(px, py)
         if (hit >= 0) removeNeuron(hit)
         else addNeuron(px, py)
@@ -1343,6 +1420,8 @@
       initOutput()
       resizeCanvas()
       updateCounters()
+      statusEl.textContent = 'Start by clicking in the Input column to add neurons.'
+      statusEl.style.opacity = '1'
       lastTime = performance.now()
       requestAnimationFrame(animate)
     }
