@@ -409,6 +409,8 @@
       const LDELAY = 350
       const sigmoid = x => 1 / (1 + Math.exp(-Math.max(-12, Math.min(12, x))))
 
+      const noisyDigit = (d) => DIGITS[d].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06)
+
       let neurons = []
       let layers = [[], [], [], []]
       let conns = []
@@ -607,7 +609,7 @@
 
       const selectDigit = (digit) => {
         currentDigit = digit
-        digitPixels = DIGITS[digit].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06)
+        digitPixels = noisyDigit(digit)
         digitBtns.forEach(btn =>
           btn.classList.toggle('active', parseInt(btn.getAttribute('data-digit')) === digit))
         inputAlpha = 1; predAlpha = 0; pixPulse = -1; pulseTime = -1
@@ -693,25 +695,30 @@
 
       const computeAccuracy = (filled) => {
         let correct = 0
+        const samplesPerDigit = 10
+        const total = 10 * samplesPerDigit
         for (let d = 0; d < 10; d++) {
-          for (const idx of layers[0])
-            neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (DIGITS[d][neurons[idx].pixelIndex] || 0) : 0
-          for (let k = 1; k < filled.length; k++) {
-            const li = filled[k], pl = filled[k - 1]
-            for (const idx of layers[li]) {
-              let s = neurons[idx].bias
-              for (const c of conns)
-                if (c.to === idx && neurons[c.from].layer === pl)
-                  s += neurons[c.from].fwdAct * c.weight
-              neurons[idx].fwdAct = li === 3 ? s : sigmoid(s)
+          for (let s = 0; s < samplesPerDigit; s++) {
+            const noisyPix = noisyDigit(d)
+            for (const idx of layers[0])
+              neurons[idx].fwdAct = neurons[idx].pixelIndex >= 0 ? (noisyPix[neurons[idx].pixelIndex] || 0) : 0
+            for (let k = 1; k < filled.length; k++) {
+              const li = filled[k], pl = filled[k - 1]
+              for (const idx of layers[li]) {
+                let sum = neurons[idx].bias
+                for (const c of conns)
+                  if (c.to === idx && neurons[c.from].layer === pl)
+                    sum += neurons[c.from].fwdAct * c.weight
+                neurons[idx].fwdAct = li === 3 ? sum : sigmoid(sum)
+              }
             }
+            let bestI = 0
+            for (let i = 1; i < layers[3].length; i++)
+              if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
+            if (neurons[layers[3][bestI]].digitLabel === d) correct++
           }
-          let bestI = 0
-          for (let i = 1; i < layers[3].length; i++)
-            if (neurons[layers[3][i]].fwdAct > neurons[layers[3][bestI]].fwdAct) bestI = i
-          if (neurons[layers[3][bestI]].digitLabel === d) correct++
         }
-        return correct
+        return Math.round(correct / total * 100)
       }
 
       const trainNetwork = () => {
@@ -728,7 +735,7 @@
         const trainData = []
         for (let d = 0; d < 10; d++)
           for (let a = 0; a < 8; a++)
-            trainData.push({ pix: DIGITS[d].map(v => v ? 0.5 + Math.random() * 0.5 : Math.random() * 0.06), label: d })
+            trainData.push({ pix: noisyDigit(d), label: d })
 
         const lr = 0.5, totalEpochs = 20, epochsPerFrame = 1
         let epoch = 0
@@ -749,7 +756,7 @@
 
           const lastSample = trainData[trainData.length - 1]
           currentDigit = lastSample.label
-          digitPixels = lastSample.pix.map(v => v > 0.3 ? 0.6 + Math.random() * 0.25 : Math.random() * 0.04)
+          digitPixels = lastSample.pix.slice()
           inputAlpha = 1
           digitBtns.forEach(btn =>
             btn.classList.toggle('active', parseInt(btn.getAttribute('data-digit')) === lastSample.label))
@@ -780,8 +787,8 @@
             neurons.forEach(n => { n.act = 0 })
             predAlpha = 0; prediction = -1
             const acc = computeAccuracy(filled)
-            const tip = acc < 7 ? ' Try adding more neurons and training again.' : ' Pick a digit to test.'
-            showStatus('Training complete! Accuracy: ' + acc + '/10.' + tip, 5000)
+            const tip = acc < 70 ? ' Try adding more neurons and training again.' : ' Pick a digit to test.'
+            showStatus('Training complete! Accuracy: ' + acc + '%.' + tip, 5000)
           }
         }
 
