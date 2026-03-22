@@ -701,11 +701,11 @@
 
       const runPredict = () => {
         if (currentDigit < 0) {
-          showStatus('Pick a digit first!', 2500)
+          showStatus('Pick a digit first.', 2500)
           return
         }
         if (layers[0].length === 0) {
-          showStatus('Add input neurons first!', 2500)
+          showStatus('Add input neurons first.', 2500)
           return
         }
         if (!hasPath()) {
@@ -800,7 +800,7 @@
         const filled = []
         for (let li = 0; li < NZONES; li++)
           if (layers[li].length > 0) filled.push(li)
-        if (!filled.includes(0)) { showStatus('Add input neurons first!', 2500); return }
+        if (!filled.includes(0)) { showStatus('Add input neurons first.', 2500); return }
         if (!hasPath()) { showStatus(nextHint(), 2500); return }
 
         isTraining = true
@@ -862,7 +862,7 @@
             predAlpha = 0; prediction = -1
             const acc = computeAccuracy()
             const tip = acc < 70 ? ' Try adding more neurons and training again.' : ' Pick a digit to test.'
-            showStatus('Training complete! Accuracy: ' + acc + '%.' + tip, 5000)
+            showStatus('Training complete. Accuracy: ' + acc + '%.' + tip, 5000)
           }
         }
 
