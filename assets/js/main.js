@@ -264,7 +264,8 @@
       loop: true,
       typeSpeed: 80,
       backSpeed: 20,
-      backDelay: 1500
+      backDelay: 1500,
+      startDelay: 400
     });
   }
 
@@ -1352,7 +1353,7 @@
    */
   window.addEventListener('load', () => {
     AOS.init({
-      duration: 1000,
+      duration: 800,
       easing: 'ease-in-out',
       once: true,
       mirror: false
