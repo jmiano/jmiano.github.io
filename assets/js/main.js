@@ -919,7 +919,7 @@
           const cR = Math.round(160 * (1 - t) + 80 * t)
           const cG = Math.round(80 * (1 - t) + 170 * t)
           const cB = Math.round(255 * (1 - t) + 255 * t)
-          ctx.strokeStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + (0.15 + wNorm * 0.2) + ')'
+          ctx.strokeStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + (0.25 + wNorm * 0.2) + ')'
           ctx.lineWidth = 0.5 + wNorm * 0.6
           ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke()
 
@@ -1017,7 +1017,7 @@
         const lgY = H - 28
         const lgGrad = ctx.createLinearGradient(lgX, 0, lgX + lgW, 0)
         lgGrad.addColorStop(0, 'rgba(160,80,255,0.7)')
-        lgGrad.addColorStop(0.5, 'rgba(120,125,255,0.25)')
+        lgGrad.addColorStop(0.5, 'rgba(120,125,255,0.35)')
         lgGrad.addColorStop(1, 'rgba(80,170,255,0.7)')
         ctx.fillStyle = lgGrad
         ctx.beginPath()
