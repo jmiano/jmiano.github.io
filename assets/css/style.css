@@ -1685,8 +1685,8 @@ section {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  margin-top: 0.08rem;
-  margin-right: 0.75rem;
+  margin-top: 0.09rem;
+  margin-right: 0.8rem;
   overflow: visible;
   border-radius: 0 0 10px 10px;
   background: rgba(255, 255, 255, 0.97);
@@ -1907,7 +1907,7 @@ section {
   }
 
   .neural-digit-classifier-hint-nav {
-    margin-right: 0.45rem;
+    margin-right: 0.85rem;
   }
 
   .neural-digit-classifier-hint-arrow {
