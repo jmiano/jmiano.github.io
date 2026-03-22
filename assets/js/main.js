@@ -837,24 +837,24 @@
           if (z < 3 && layers[z].length === 0) {
             const pulseAlpha = 0.5 + 0.2 * Math.sin(globalTime * 0.002)
             const cx = ZX[z] * W, cy = H / 2 - 6
-            const cr = 12
+            const cr = 8
             ctx.strokeStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
             ctx.lineWidth = 1.2
             ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.stroke()
             ctx.fillStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
-            ctx.font = '16px system-ui, sans-serif'
+            ctx.font = '14px system-ui, sans-serif'
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
             ctx.fillText('+', cx, cy)
             ctx.textBaseline = 'alphabetic'
             ctx.fillStyle = 'rgba(180,215,255,' + pulseAlpha + ')'
-            ctx.font = '9px system-ui, sans-serif'
+            ctx.font = '8px system-ui, sans-serif'
             ctx.fillText('click to add', cx, cy + cr + 13)
             ctx.fillText('neurons', cx, cy + cr + 25)
           }
         }
 
-        const dX = W * 0.015, dW = W * 0.11, dH2 = H * (W < 500 ? 0.12 : 0.26)
+        const dX = W * 0.015, dW = W < 500 ? W * 0.14 : W * 0.11, dH2 = H * (W < 500 ? 0.12 : 0.26)
         const dY = H / 2 - dH2
         const dPad = 6
         digitBoxRect = { x: dX, y: dY, w: dW, h: dH2 * 2 }
@@ -899,17 +899,17 @@
         } else {
           const digitPulse = 0.5 + 0.2 * Math.sin(globalTime * 0.002)
           const dcx = dX + dW / 2, dcy = H / 2 - 10
-          const dcr = 12
+          const dcr = 8
           ctx.strokeStyle = 'rgba(180,215,255,' + digitPulse + ')'
           ctx.lineWidth = 1.2
           ctx.beginPath(); ctx.arc(dcx, dcy, dcr, 0, Math.PI * 2); ctx.stroke()
           ctx.fillStyle = 'rgba(180,215,255,' + digitPulse + ')'
-          ctx.font = '16px system-ui, sans-serif'
+          ctx.font = '14px system-ui, sans-serif'
           ctx.textAlign = 'center'
           ctx.textBaseline = 'middle'
           ctx.fillText('+', dcx, dcy)
           ctx.textBaseline = 'alphabetic'
-          ctx.font = '9px system-ui, sans-serif'
+          ctx.font = '8px system-ui, sans-serif'
           ctx.fillText('click to pick', dcx, dcy + dcr + 13)
           ctx.fillText('a digit', dcx, dcy + dcr + 25)
         }
