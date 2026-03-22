@@ -380,7 +380,7 @@
     const connCountEl = select('#neural-digit-classifier-connections')
     const statusEl = select('#neural-digit-classifier-status')
     const ctrlBtns = select('[data-neural-action]', true)
-    const digitBtns = select('.neural-digit-classifier-digit', true)
+    const digitBtns = select('.neural-digit-classifier-digit[data-digit]', true)
 
     if (canvas && ctx) {
       let W = 0, H = 0
@@ -522,11 +522,21 @@
         sorted.forEach((idx, i) => { neurons[idx].pixelIndex = i })
       }
 
+      const nextHint = () => {
+        const hasInput = layers[0].length > 0
+        const hasHidden = layers[1].length > 0 || layers[2].length > 0
+        const hasDigit = currentDigit >= 0
+        if (!hasInput) return 'Add neurons to the Input column.'
+        if (!hasHidden) return 'Add hidden neurons to improve predictions.'
+        if (!hasDigit) return 'Pick a digit, then try clicking Predict!'
+        return 'Try clicking Predict!'
+      }
+
       const addNeuron = (px, py) => {
         const zone = whichZone(px)
         if (zone < 0) return -1
         if (zone === 0 && layers[0].length >= NPIX) {
-          showStatus('All ' + NPIX + ' input pixels are already mapped. Cannot add more input neurons.', 2500)
+          showStatus('All ' + NPIX + ' input neurons added. ' + nextHint(), 3000)
           return -1
         }
         const idx = neurons.length
@@ -543,10 +553,14 @@
         if (zone === 0) reassignInputPixels()
         rebuildConns()
         updateCounters()
-        if (zone === 0)
-          showStatus('Added input neuron P' + (layers[0].length - 1) + '. ' + layers[0].length + '/' + NPIX + ' pixels mapped.', 2500)
-        else
-          showStatus('Added hidden neuron to ' + ZLABELS[zone] + '.', 2500)
+        if (zone === 0) {
+          const inputCount = layers[0].length
+          const inputHint = inputCount < NPIX
+            ? 'Keep adding to map all inputs.'
+            : nextHint()
+          showStatus('Added input neuron (' + inputCount + '/' + NPIX + '). ' + inputHint, 3000)
+        } else
+          showStatus('Added neuron to ' + ZLABELS[zone] + '. ' + nextHint(), 3000)
         return idx
       }
 
@@ -599,7 +613,14 @@
         inputAlpha = 1; predAlpha = 0; pixPulse = -1; pulseTime = -1
         neurons.forEach(n => { n.act = 0 })
         conns.forEach(c => { c.pulse = -1 })
-        showStatus('Digit ' + digit + ' selected. Press Predict to run the forward pass.', 3000)
+        const hasInput = layers[0].length > 0
+        const hasConns = conns.length > 0
+        if (!hasInput)
+          showStatus('Digit ' + digit + ' selected. Add neurons to the Input column first.', 3000)
+        else if (!hasConns)
+          showStatus('Digit ' + digit + ' selected. Add hidden neurons to create connections.', 3000)
+        else
+          showStatus('Digit ' + digit + ' selected. Click Predict to see the prediction.', 3000)
       }
 
       const runPredict = () => {
@@ -608,14 +629,18 @@
           return
         }
         if (layers[0].length === 0) {
-          showStatus('Add at least one input neuron first!', 2500)
+          showStatus('Add input neurons first!', 2500)
+          return
+        }
+        if (conns.length === 0) {
+          showStatus('Add hidden neurons to create connections between layers.', 2500)
           return
         }
         neurons.forEach(n => { n.act = 0 })
         conns.forEach(c => { c.pulse = -1 })
         forwardPass(digitPixels)
         predAlpha = 0; pixPulse = 0; pulseTime = 0
-        showStatus('Forward pass: digit ' + currentDigit + '\u2026', 2500)
+        showStatus('Predicting digit ' + currentDigit + '\u2026', 2500)
       }
 
       let isTraining = false
@@ -695,7 +720,7 @@
         for (let li = 0; li < NZONES; li++)
           if (layers[li].length > 0) filled.push(li)
         if (!filled.includes(0)) { showStatus('Add input neurons first!', 2500); return }
-        if (conns.length === 0) { showStatus('No connections. Add hidden neurons to bridge layers.', 2500); return }
+        if (conns.length === 0) { showStatus('Add hidden neurons to create connections between layers.', 2500); return }
 
         isTraining = true
         predAlpha = 0; pulseTime = -1; pixPulse = -1
@@ -745,7 +770,7 @@
           })
 
           const pct = Math.round(epoch / totalEpochs * 100)
-          showStatus('Training ' + pct + '%  |  Epoch ' + epoch + '/' + totalEpochs)
+          showStatus('Training\u2026 ' + pct + '%')
 
           if (epoch < totalEpochs) {
             requestAnimationFrame(trainFrame)
@@ -755,7 +780,8 @@
             neurons.forEach(n => { n.act = 0 })
             predAlpha = 0; prediction = -1
             const acc = computeAccuracy(filled)
-            showStatus('Trained! Accuracy: ' + acc + '/10. Pick a digit to test.', 4500)
+            const tip = acc < 7 ? ' Try adding more neurons and training again.' : ' Pick a digit to test.'
+            showStatus('Training complete! Accuracy: ' + acc + '/10.' + tip, 5000)
           }
         }
 
@@ -768,7 +794,7 @@
         inputAlpha = 0; predAlpha = 0; pixPulse = -1; pulseTime = -1
         digitBtns.forEach(btn => btn.classList.remove('active'))
         initOutput(); snapOutputY(); rebuildConns(); updateCounters()
-        showStatus('Network reset.', 2500)
+        showStatus('Network reset. Start by adding neurons to the Input column.', 3000)
       }
 
       const update = (dt) => {
@@ -813,7 +839,7 @@
         const predT = 350 + (filled.length - 1) * lDelay + 40
         predAlpha = pulseTime > predT ? 1 : 0
         if (predAlpha > 0 && prediction >= 0 && pulseTime - dt <= predT)
-          showStatus('Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence)', 3500)
+          showStatus('Predicted: ' + prediction + ' (' + Math.round(confidence * 100) + '% confidence). Click Train to improve accuracy.', 4000)
       }
 
       const render = () => {
@@ -1111,7 +1137,7 @@
         snapOutputY()
         updateCounters()
         hoverNeuron = -1
-        showStatus('Removed neuron from ' + ZLABELS[li] + '.', 2500)
+        showStatus('Removed neuron from ' + ZLABELS[li] + '. ' + nextHint(), 3000)
       }
 
       const isInDigitBox = (px, py) => {
