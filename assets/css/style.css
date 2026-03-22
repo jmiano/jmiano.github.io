@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #0066ff;
   transform: scale(1.03);
 }
-#header .profile h1 {
+#header .profile .profile-name {
   font-size: 24px;
   margin: 0;
   padding: 0;
@@ -99,7 +99,7 @@ h1, h2, h3, h4, h5, h6 {
   text-align-last: center;
   font-family: "Poppins", sans-serif;
 }
-#header .profile h1 a, #header .profile h1 a:hover {
+#header .profile .profile-name a, #header .profile .profile-name a:hover {
   color: #fff;
   text-decoration: none;
 }

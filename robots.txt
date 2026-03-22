@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://josephmiano.com/sitemap.xml
