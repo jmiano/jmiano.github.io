@@ -1421,7 +1421,7 @@ section {
 .easter-egg-trigger.is-content-hidden .easter-egg-label {
   opacity: 0;
 }
-.neural-garden-morph-card {
+.neural-digit-classifier-morph-card {
   position: fixed;
   top: 0;
   left: 0;
@@ -1444,25 +1444,25 @@ section {
     box-shadow 0.42s ease,
     border-color 0.42s ease;
 }
-.neural-garden-morph-card.is-expanded {
+.neural-digit-classifier-morph-card.is-expanded {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
 }
-.neural-garden-morph-card.is-seed {
+.neural-digit-classifier-morph-card.is-seed {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.12);
 }
-.neural-garden-morph-card.is-expanded.is-seed {
+.neural-digit-classifier-morph-card.is-expanded.is-seed {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
 }
-.neural-garden-close {
+.neural-digit-classifier-close {
   position: absolute;
   top: 0.62rem;
   left: 0.78rem;
@@ -1477,11 +1477,11 @@ section {
   transition: color 0.18s ease, transform 0.18s ease;
   z-index: 5;
 }
-.neural-garden-close:hover {
+.neural-digit-classifier-close:hover {
   color: #d44;
   transform: scale(1.05);
 }
-.neural-garden {
+.neural-digit-classifier {
   position: relative;
   margin-top: 2.5rem;
   padding: 1.75rem;
@@ -1490,20 +1490,20 @@ section {
   border: 1px solid rgba(0, 102, 255, 0.08);
   box-shadow: 0 14px 40px rgba(11, 41, 77, 0.08);
 }
-.neural-garden-content {
+.neural-digit-classifier-content {
   transition: opacity 0.34s ease;
 }
-.neural-garden.is-content-hidden .neural-garden-content {
+.neural-digit-classifier.is-content-hidden .neural-digit-classifier-content {
   opacity: 0;
 }
-.neural-garden-header {
+.neural-digit-classifier-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
-.neural-garden-badge {
+.neural-digit-classifier-badge {
   display: inline-flex;
   align-items: center;
   margin-bottom: 0.9rem;
@@ -1516,22 +1516,35 @@ section {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.neural-garden h3 {
+.neural-digit-classifier h3 {
   margin: 0 0 0.5rem;
   color: #173b6c;
   font-size: 1.5rem;
 }
-.neural-garden p {
+.neural-digit-classifier p {
   margin: 0;
   max-width: 640px;
   color: #4f6581;
 }
-.neural-garden-controls {
+.neural-digit-classifier-steps {
+  margin: 0.4rem 0 0;
+  padding-left: 1.25rem;
+  max-width: 640px;
+  color: #4f6581;
+  line-height: 1.65;
+}
+.neural-digit-classifier-steps li {
+  margin-bottom: 0.15rem;
+}
+.neural-digit-classifier-steps li strong {
+  color: #0066ff;
+}
+.neural-digit-classifier-controls {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
-.neural-garden-btn {
+.neural-digit-classifier-btn {
   border: none;
   border-radius: 999px;
   padding: 0.65rem 1rem;
@@ -1543,27 +1556,27 @@ section {
   box-shadow: 0 8px 18px rgba(0, 102, 255, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
-.neural-garden-btn:hover {
+.neural-digit-classifier-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 22px rgba(0, 102, 255, 0.24);
 }
-.neural-garden-btn-secondary {
+.neural-digit-classifier-btn-secondary {
   background: rgba(23, 59, 108, 0.08);
   color: #173b6c;
   box-shadow: none;
   transition: none;
 }
-.neural-garden-btn-secondary:hover {
+.neural-digit-classifier-btn-secondary:hover {
   transform: translateY(-1px);
   box-shadow: none;
 }
-.neural-garden-digits {
+.neural-digit-classifier-digits {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   flex-wrap: wrap;
 }
-.neural-garden-digit {
+.neural-digit-classifier-digit {
   width: 40px;
   height: 40px;
   border: 2px solid rgba(0, 102, 255, 0.15);
@@ -1579,21 +1592,21 @@ section {
   justify-content: center;
   padding: 0;
 }
-.neural-garden-digit:hover {
+.neural-digit-classifier-digit:hover {
   background: rgba(0, 102, 255, 0.1);
   border-color: rgba(0, 102, 255, 0.35);
   transform: translateY(-1px);
 }
-.neural-garden-digit.active {
+.neural-digit-classifier-digit.active {
   background: #0066ff;
   color: #fff;
   border-color: #0066ff;
   box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
 }
-.neural-garden-hints-toggle {
+.neural-digit-classifier-hints-toggle {
   min-width: 5.5rem;
 }
-.neural-garden-hints {
+.neural-digit-classifier-hints {
   position: absolute;
   top: 100%;
   right: -1rem;
@@ -1613,7 +1626,7 @@ section {
   padding-top: 0;
   padding-bottom: 0;
 }
-.neural-garden-hints.open {
+.neural-digit-classifier-hints.open {
   max-height: 280px;
   opacity: 1;
   transform: translateY(0);
@@ -1621,7 +1634,7 @@ section {
   padding-top: 0.5rem;
   padding-bottom: 1.25rem;
 }
-.neural-garden-hint-track {
+.neural-digit-classifier-hint-track {
   position: relative;
   z-index: 1;
   display: grid;
@@ -1631,7 +1644,7 @@ section {
   background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 6px 20px rgba(0, 40, 100, 0.12), 0 1px 4px rgba(0, 40, 100, 0.06);
 }
-.neural-garden-hint-slide {
+.neural-digit-classifier-hint-slide {
   position: relative;
   grid-area: 1 / 1;
   display: flex;
@@ -1648,13 +1661,13 @@ section {
   visibility: hidden;
   pointer-events: none;
 }
-.neural-garden-hint-slide.active {
+.neural-digit-classifier-hint-slide.active {
   opacity: 1;
   transform: translateY(0);
   visibility: visible;
   pointer-events: auto;
 }
-.neural-garden-hint-nav {
+.neural-digit-classifier-hint-nav {
   position: relative;
   z-index: 2;
   display: grid;
@@ -1667,7 +1680,7 @@ section {
   background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 5px 14px rgba(0, 40, 100, 0.10), 0 1px 3px rgba(0, 40, 100, 0.05);
 }
-.neural-garden-hint-arrow {
+.neural-digit-classifier-hint-arrow {
   appearance: none;
   -webkit-appearance: none;
   border: none;
@@ -1687,17 +1700,17 @@ section {
   opacity: 0.78;
   cursor: pointer;
 }
-.neural-garden-hint-arrow + .neural-garden-hint-arrow {
+.neural-digit-classifier-hint-arrow + .neural-digit-classifier-hint-arrow {
   border-left: 1px solid rgba(79, 101, 129, 0.12);
 }
-.neural-garden-hint-arrow:hover {
+.neural-digit-classifier-hint-arrow:hover {
   background: transparent;
   color: #0066ff !important;
   -webkit-text-fill-color: #0066ff;
   opacity: 1;
   transform: translateY(-1px);
 }
-.neural-garden-stage {
+.neural-digit-classifier-stage {
   position: relative;
   overflow: hidden;
   height: clamp(300px, 42vw, 420px);
@@ -1706,31 +1719,31 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
-#neural-garden-canvas {
+#neural-digit-classifier-canvas {
   display: block;
   width: 100%;
   height: 100%;
   cursor: crosshair;
   touch-action: none;
 }
-.neural-garden-footer {
+.neural-digit-classifier-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
 }
-#neural-garden-status {
+#neural-digit-classifier-status {
   color: #4f6581;
   font-size: 0.95rem;
 }
-.neural-garden-stats {
+.neural-digit-classifier-stats {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.75rem;
 }
-.neural-garden-stats span {
+.neural-digit-classifier-stats span {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -1741,11 +1754,11 @@ section {
   font-size: 0.88rem;
   font-weight: 600;
 }
-.neural-garden-stats strong {
+.neural-digit-classifier-stats strong {
   color: #0066ff;
 }
 @media (max-width: 991px) {
-  .neural-garden-header {
+  .neural-digit-classifier-header {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: start;
@@ -1753,14 +1766,14 @@ section {
     row-gap: 0.5rem;
   }
 
-  .neural-garden-footer {
+  .neural-digit-classifier-footer {
     flex-direction: column;
     align-items: flex-start;
     margin-top: 0.35rem;
     gap: 0.35rem;
   }
 
-  .neural-garden-controls {
+  .neural-digit-classifier-controls {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -1771,97 +1784,97 @@ section {
     justify-self: end;
   }
 
-  .neural-garden-controls .neural-garden-btn-secondary {
+  .neural-digit-classifier-controls .neural-digit-classifier-btn-secondary {
     font-size: 0.75rem;
     padding: 0.35rem 0.6rem;
     white-space: nowrap;
     min-width: 0;
   }
 
-  .neural-garden-header > div:first-child {
+  .neural-digit-classifier-header > div:first-child {
     display: contents;
   }
 
-  .neural-garden-badge {
+  .neural-digit-classifier-badge {
     grid-column: 1;
     grid-row: 1;
     margin-bottom: 0;
     justify-self: start;
   }
 
-  .neural-garden-header h3 {
+  .neural-digit-classifier-header h3 {
     grid-column: 1 / -1;
     grid-row: 2;
   }
 
-  .neural-garden-header p {
+  .neural-digit-classifier-header p {
     grid-column: 1 / -1;
     grid-row: 3;
   }
 
-  .neural-garden p {
+  .neural-digit-classifier p {
     max-width: none;
   }
 
-  .neural-garden-stage {
+  .neural-digit-classifier-stage {
     height: 340px;
   }
 
-  .neural-garden-hints {
+  .neural-digit-classifier-hints {
     right: -1rem;
     left: auto;
     transform-origin: top right;
   }
 
-  .neural-garden-hint-track {
+  .neural-digit-classifier-hint-track {
     width: min(292px, calc(100vw - 4rem));
   }
 
-  .neural-garden-digits {
+  .neural-digit-classifier-digits {
     gap: 0.35rem;
   }
 
-  .neural-garden-digit {
+  .neural-digit-classifier-digit {
     width: 34px;
     height: 34px;
     font-size: 0.95rem;
   }
 }
 @media (max-width: 575px) {
-  .neural-garden {
+  .neural-digit-classifier {
     padding: 1.25rem;
   }
 
-  .neural-garden-stage {
+  .neural-digit-classifier-stage {
     height: 280px;
   }
 
-  .neural-garden-hint-track {
+  .neural-digit-classifier-hint-track {
     width: min(268px, calc(100vw - 3rem));
   }
 
-  .neural-garden-hint-slide {
+  .neural-digit-classifier-hint-slide {
     font-size: 0.88rem;
     line-height: 1.5;
     padding: 0.62rem 0.82rem 0.68rem;
   }
 
-  .neural-garden-hint-nav {
+  .neural-digit-classifier-hint-nav {
     margin-right: 0.45rem;
   }
 
-  .neural-garden-hint-arrow {
+  .neural-digit-classifier-hint-arrow {
     min-width: 2rem;
     height: 1.85rem;
   }
 
-  .neural-garden-digit {
+  .neural-digit-classifier-digit {
     width: 28px;
     height: 28px;
     font-size: 0.85rem;
   }
 
-  .neural-garden-digits {
+  .neural-digit-classifier-digits {
     gap: 0.25rem;
   }
 }

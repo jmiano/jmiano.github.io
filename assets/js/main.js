@@ -370,17 +370,17 @@
   });
 
   /**
-   * Neural Garden - Build Your Own Digit Classifier
+   * Neural Digit Classifier - Build Your Own Digit Classifier
    */
-  const neuralGarden = select('.neural-garden')
-  if (neuralGarden) {
-    const canvas = select('#neural-garden-canvas')
+  const neuralDigitClassifier = select('.neural-digit-classifier')
+  if (neuralDigitClassifier) {
+    const canvas = select('#neural-digit-classifier-canvas')
     const ctx = canvas ? canvas.getContext('2d') : null
-    const neuronCountEl = select('#neural-garden-neurons')
-    const connCountEl = select('#neural-garden-connections')
-    const statusEl = select('#neural-garden-status')
+    const neuronCountEl = select('#neural-digit-classifier-neurons')
+    const connCountEl = select('#neural-digit-classifier-connections')
+    const statusEl = select('#neural-digit-classifier-status')
     const ctrlBtns = select('[data-neural-action]', true)
-    const digitBtns = select('.neural-garden-digit', true)
+    const digitBtns = select('.neural-digit-classifier-digit', true)
 
     if (canvas && ctx) {
       let W = 0, H = 0
@@ -820,7 +820,7 @@
           ctx.fillStyle = 'rgba(255,255,255,0.04)'
           ctx.fillRect(zl, 0, zw, H)
           if (z > 0) {
-            ctx.strokeStyle = 'rgba(255,255,255,0.14)'
+            ctx.strokeStyle = 'rgba(120,180,255,0.2)'
             ctx.lineWidth = 1; ctx.setLineDash([4, 4])
             ctx.beginPath(); ctx.moveTo(zl, 0); ctx.lineTo(zl, H); ctx.stroke()
             ctx.setLineDash([])
@@ -830,7 +830,7 @@
           ctx.textAlign = 'center'
           ctx.fillText(ZLABELS[z], ZX[z] * W, 14)
           if (z < 3 && layers[z].length === 0) {
-            ctx.fillStyle = 'rgba(180,215,255,0.3)'
+            ctx.fillStyle = 'rgba(180,215,255,0.5)'
             ctx.font = '9px system-ui, sans-serif'
             ctx.fillText('click to add', ZX[z] * W, H / 2)
           }
@@ -878,7 +878,7 @@
               ctx.closePath(); ctx.fill()
             }
         } else {
-          ctx.fillStyle = 'rgba(180,215,255,0.35)'
+          ctx.fillStyle = 'rgba(180,215,255,0.5)'
           ctx.font = '9px system-ui, sans-serif'
           ctx.textAlign = 'center'
           ctx.fillText('Pick a', dX + dW / 2, H / 2 - 4)
@@ -1126,17 +1126,17 @@
       })
 
       const easterEgg = select('.easter-egg-trigger')
-      const gardenClose = select('.neural-garden-close')
+      const classifierClose = select('.neural-digit-classifier-close')
       const eggMotion = select('.easter-egg-motion')
       const eggShell = select('.easter-egg-shell')
       const eggCore = select('.easter-egg-core')
-      const gardenContent = select('.neural-garden-content')
+      const classifierContent = select('.neural-digit-classifier-content')
       const EGG_CRACK_MS = 360
       const EGG_MORPH_MS = 420
       let eggAnimating = false
 
       const clearEggMorph = () => {
-        const card = document.querySelector('.neural-garden-morph-card')
+        const card = document.querySelector('.neural-digit-classifier-morph-card')
         if (card) card.remove()
       }
 
@@ -1158,7 +1158,7 @@
       const createEggMorph = (rect, expanded) => {
         clearEggMorph()
         const card = document.createElement('div')
-        card.className = 'neural-garden-morph-card'
+        card.className = 'neural-digit-classifier-morph-card'
         if (expanded) card.classList.add('is-expanded')
         card.style.top = `${rect.top}px`
         card.style.left = `${rect.left}px`
@@ -1179,11 +1179,11 @@
       }
 
       const resetGardenDisplay = () => {
-        neuralGarden.style.visibility = ''
-        neuralGarden.style.opacity = ''
-        neuralGarden.style.pointerEvents = ''
-        neuralGarden.style.transform = ''
-        neuralGarden.style.transition = ''
+        neuralDigitClassifier.style.visibility = ''
+        neuralDigitClassifier.style.opacity = ''
+        neuralDigitClassifier.style.pointerEvents = ''
+        neuralDigitClassifier.style.transform = ''
+        neuralDigitClassifier.style.transition = ''
       }
 
       const freezeEggPose = () => {
@@ -1207,8 +1207,8 @@
         }
       }
 
-      const openEggGarden = async () => {
-        if (!easterEgg || !neuralGarden || !gardenContent || eggAnimating) return
+      const openEggClassifier = async () => {
+        if (!easterEgg || !neuralDigitClassifier || !classifierContent || eggAnimating) return
         eggAnimating = true
         easterEgg.style.pointerEvents = 'none'
         freezeEggPose()
@@ -1223,15 +1223,15 @@
         easterEgg.style.opacity = '0'
         easterEgg.style.display = 'none'
 
-        neuralGarden.classList.add('is-content-hidden')
-        neuralGarden.style.display = 'block'
-        neuralGarden.style.visibility = 'hidden'
-        neuralGarden.style.pointerEvents = 'none'
-        neuralGarden.style.transform = 'none'
-        neuralGarden.style.transition = 'none'
+        neuralDigitClassifier.classList.add('is-content-hidden')
+        neuralDigitClassifier.style.display = 'block'
+        neuralDigitClassifier.style.visibility = 'hidden'
+        neuralDigitClassifier.style.pointerEvents = 'none'
+        neuralDigitClassifier.style.transform = 'none'
+        neuralDigitClassifier.style.transition = 'none'
         resizeCanvas()
 
-        const endRect = neuralGarden.getBoundingClientRect()
+        const endRect = neuralDigitClassifier.getBoundingClientRect()
         animateEggMorph(card, endRect, true)
 
         await waitForEggMorph(card)
@@ -1240,21 +1240,21 @@
         easterEgg.style.opacity = ''
         easterEgg.style.pointerEvents = ''
         resetEggCrackState()
-        neuralGarden.style.display = 'block'
-        neuralGarden.style.visibility = 'visible'
-        neuralGarden.style.transform = ''
-        neuralGarden.style.transition = ''
-        neuralGarden.classList.remove('is-content-hidden')
-        neuralGarden.style.pointerEvents = ''
+        neuralDigitClassifier.style.display = 'block'
+        neuralDigitClassifier.style.visibility = 'visible'
+        neuralDigitClassifier.style.transform = ''
+        neuralDigitClassifier.style.transition = ''
+        neuralDigitClassifier.classList.remove('is-content-hidden')
+        neuralDigitClassifier.style.pointerEvents = ''
         resizeCanvas()
         eggAnimating = false
       }
 
-      const closeEggGarden = async () => {
-        if (!easterEgg || !neuralGarden || eggAnimating || neuralGarden.style.display === 'none') return
+      const closeEggClassifier = async () => {
+        if (!easterEgg || !neuralDigitClassifier || eggAnimating || neuralDigitClassifier.style.display === 'none') return
         eggAnimating = true
 
-        const startRect = neuralGarden.getBoundingClientRect()
+        const startRect = neuralDigitClassifier.getBoundingClientRect()
         const card = createEggMorph(startRect, true)
 
         resetEggCrackState()
@@ -1264,7 +1264,7 @@
         easterEgg.style.pointerEvents = 'none'
         const endRect = easterEgg.getBoundingClientRect()
 
-        neuralGarden.style.display = 'none'
+        neuralDigitClassifier.style.display = 'none'
         resetGardenDisplay()
 
         animateEggMorph(card, endRect, false)
@@ -1282,18 +1282,18 @@
         eggAnimating = false
       }
 
-      if (easterEgg && neuralGarden) {
-        easterEgg.addEventListener('click', openEggGarden)
+      if (easterEgg && neuralDigitClassifier) {
+        easterEgg.addEventListener('click', openEggClassifier)
       }
-      if (gardenClose && neuralGarden && easterEgg) {
-        gardenClose.addEventListener('click', closeEggGarden)
+      if (classifierClose && neuralDigitClassifier && easterEgg) {
+        classifierClose.addEventListener('click', closeEggClassifier)
       }
 
-      const hintsToggle = select('.neural-garden-hints-toggle')
-      const hintsPanel = select('.neural-garden-hints')
-      const hintSlides = select('.neural-garden-hint-slide', true)
-      const hintPrev = select('.neural-garden-hint-prev')
-      const hintNext = select('.neural-garden-hint-next')
+      const hintsToggle = select('.neural-digit-classifier-hints-toggle')
+      const hintsPanel = select('.neural-digit-classifier-hints')
+      const hintSlides = select('.neural-digit-classifier-hint-slide', true)
+      const hintPrev = select('.neural-digit-classifier-hint-prev')
+      const hintNext = select('.neural-digit-classifier-hint-next')
       let hintIndex = 0
 
       const showHint = (nextIndex) => {
