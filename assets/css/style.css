@@ -105,11 +105,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 #header .profile .social-links a {
   font-size: 18px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
   background: #212431;
   color: #fff;
   line-height: 1;
-  padding: 8px 0;
+  padding: 0;
   margin-right: 4px;
   border-radius: 50%;
   text-align: center;
@@ -122,6 +125,12 @@ h1, h2, h3, h4, h5, h6 {
   color: rgb(255, 255, 255);
   text-decoration: none;
   transform: scale(1.03);
+}
+
+.social-icon {
+  width: 0.888889em;
+  height: 0.888889em;
+  vertical-align: -0.125em;
 }
 
 #main {
@@ -1233,6 +1242,19 @@ section {
   color: #fff;
 }
 
+.contact-social {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.contact-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  height: 36px;
+  line-height: 1;
+}
 .contact-social a,
 .contact-social a i {
   font-size: 36px !important;
